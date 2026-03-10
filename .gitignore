@@ -1,0 +1,8 @@
+marvel-frontend/
+marvel-backend/
+CLAUDE.md
+cache.md
+TODO-FRONT.md
+.claude/
+.DS_Store
+Thumbs.db
