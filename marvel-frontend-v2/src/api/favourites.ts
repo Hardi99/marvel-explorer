@@ -17,16 +17,16 @@ export interface AddFavouritePayload {
   thumbnailExtension: string;
 }
 
-export const getFavourites = (token: string) =>
-  apiFetch<Favourite[]>('/favourites', token);
+export const getFavourites = () =>
+  apiFetch<Favourite[]>('/favourites');
 
-export const addFavourite = (token: string, payload: AddFavouritePayload) =>
-  apiFetch<{ message: string }>('/favourites', token, {
+export const addFavourite = (payload: AddFavouritePayload) =>
+  apiFetch<{ message: string }>('/favourites', {
     method: 'POST',
     body: JSON.stringify(payload),
   });
 
-export const removeFavourite = (token: string, itemId: string) =>
-  apiFetch<{ message: string }>(`/favourites/${itemId}`, token, {
+export const removeFavourite = (itemId: string) =>
+  apiFetch<{ message: string }>(`/favourites/${itemId}`, {
     method: 'DELETE',
   });

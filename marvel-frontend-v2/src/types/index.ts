@@ -30,6 +30,5 @@ export interface ApiResponse<T> {
 }
 
 export interface User {
-  token: string;
   username: string;
 }

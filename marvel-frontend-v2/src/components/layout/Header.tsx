@@ -1,15 +1,17 @@
 import { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/auth';
+import { logout as logoutApi } from '../../api/auth';
 import { LogOut, User, Heart, Menu, X } from 'lucide-react';
 import { Button } from '../ui/Button';
 
 export function Header() {
-  const { token, username, logout } = useAuthStore();
+  const { isLoggedIn, username, logout } = useAuthStore();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await logoutApi().catch(() => {});
     logout();
     setMenuOpen(false);
     navigate('/');
@@ -41,7 +43,7 @@ export function Header() {
           <NavLink to="/" end className={navLinkClass}>Accueil</NavLink>
           <NavLink to="/characters" className={navLinkClass}>Personnages</NavLink>
           <NavLink to="/comics" className={navLinkClass}>Comics</NavLink>
-          {token && (
+          {isLoggedIn && (
             <NavLink to="/favourites" className={navLinkClass}>
               <span className="flex items-center gap-1.5">
                 <Heart size={14} />
@@ -53,7 +55,7 @@ export function Header() {
 
         {/* Auth desktop */}
         <div className="hidden md:flex items-center gap-3 flex-shrink-0">
-          {token ? (
+          {isLoggedIn ? (
             <>
               <span className="text-white/50 text-sm flex items-center gap-1.5">
                 <User size={14} />
@@ -102,7 +104,7 @@ export function Header() {
             <NavLink to="/comics" className={mobileNavLinkClass} onClick={() => setMenuOpen(false)}>
               Comics
             </NavLink>
-            {token && (
+            {isLoggedIn && (
               <NavLink to="/favourites" className={mobileNavLinkClass} onClick={() => setMenuOpen(false)}>
                 <span className="flex items-center gap-1.5">
                   <Heart size={14} />
@@ -112,7 +114,7 @@ export function Header() {
             )}
 
             <div className="p-4 flex flex-col gap-3 border-t border-white/5">
-              {token ? (
+              {isLoggedIn ? (
                 <>
                   <span className="text-white/40 text-sm flex items-center gap-1.5">
                     <User size={14} /> {username}

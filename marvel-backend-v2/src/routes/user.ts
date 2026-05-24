@@ -4,6 +4,7 @@ import { eq, or } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
 import { randomBytes } from 'crypto';
 import { sign } from 'hono/jwt';
+import { setCookie, deleteCookie } from 'hono/cookie';
 import { db } from '../db/index.js';
 import { usersTable, signupSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema } from '../db/schema.js';
 import { sendWelcomeEmail, sendResetEmail } from '../utils/email.js';
@@ -57,7 +58,20 @@ userRoutes.post('/user/login', zValidator('json', loginSchema), async (c) => {
     process.env.JWT_SECRET!
   );
 
-  return c.json({ token, username: user.username });
+  setCookie(c, 'auth_token', token, {
+    httpOnly: true,
+    sameSite: 'Strict',
+    path: '/',
+    maxAge: JWT_EXPIRY_SECONDS,
+    secure: process.env.NODE_ENV === 'production',
+  });
+
+  return c.json({ username: user.username });
+});
+
+userRoutes.post('/user/logout', (c) => {
+  deleteCookie(c, 'auth_token', { path: '/' });
+  return c.json({ message: 'Déconnecté' });
 });
 
 userRoutes.post('/user/forgot-password', zValidator('json', forgotPasswordSchema), async (c) => {

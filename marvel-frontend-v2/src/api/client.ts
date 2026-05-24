@@ -13,15 +13,16 @@ export class ApiError extends Error {
 
 export async function apiFetch<T>(
   path: string,
-  token: string | null,
   options?: RequestInit
 ): Promise<T> {
-  const headers: HeadersInit = {
-    'Content-Type': 'application/json',
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  };
-
-  const res = await fetch(`${BASE_URL}${path}`, { ...options, headers });
+  const res = await fetch(`${BASE_URL}${path}`, {
+    ...options,
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  });
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));

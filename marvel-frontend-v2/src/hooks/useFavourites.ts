@@ -3,12 +3,12 @@ import { useAuthStore } from '../store/auth';
 import { getFavourites } from '../api/favourites';
 
 export function useFavourites() {
-  const { token } = useAuthStore();
+  const { isLoggedIn } = useAuthStore();
 
   const { data: favourites = [] } = useQuery({
     queryKey: ['favourites'],
-    queryFn: () => getFavourites(token!),
-    enabled: !!token,
+    queryFn: getFavourites,
+    enabled: isLoggedIn,
   });
 
   const isFavourite = (itemId: string) =>

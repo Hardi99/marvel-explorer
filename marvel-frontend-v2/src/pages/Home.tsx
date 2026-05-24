@@ -9,18 +9,18 @@ import { Button } from '../components/ui/Button';
 import { ChevronRight } from 'lucide-react';
 
 export default function Home() {
-  const { token } = useAuthStore();
+  const { isLoggedIn } = useAuthStore();
 
   const { data: charsData } = useQuery({
     queryKey: ['characters', 'home'],
-    queryFn: () => getCharacters(token!, { limit: 6 }),
-    enabled: !!token,
+    queryFn: () => getCharacters({ limit: 6 }),
+    enabled: isLoggedIn,
   });
 
   const { data: comicsData } = useQuery({
     queryKey: ['comics', 'home'],
-    queryFn: () => getComics(token!, { limit: 10 }),
-    enabled: !!token,
+    queryFn: () => getComics({ limit: 10 }),
+    enabled: isLoggedIn,
   });
 
   const [emblaRef] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 5000 })]);
@@ -79,7 +79,7 @@ export default function Home() {
               Explorez des milliers de personnages et comics de l'univers Marvel.
             </p>
             <div className="flex flex-wrap gap-4">
-              {token ? (
+              {isLoggedIn ? (
                 <>
                   <Link to="/characters">
                     <Button size="lg">Personnages</Button>
@@ -104,7 +104,7 @@ export default function Home() {
       </section>
 
       {/* Characters section */}
-      {token && heroCharacters.length > 0 && (
+      {isLoggedIn && heroCharacters.length > 0 && (
         <section className="max-w-7xl mx-auto px-6 py-16">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl font-black uppercase tracking-wide text-white">
@@ -146,7 +146,7 @@ export default function Home() {
       )}
 
       {/* Comics carousel */}
-      {token && featuredComics.length > 0 && (
+      {isLoggedIn && featuredComics.length > 0 && (
         <section className="py-16 bg-zinc-950/50">
           <div className="max-w-7xl mx-auto px-6">
             <div className="flex items-center justify-between mb-8">
@@ -192,7 +192,7 @@ export default function Home() {
       )}
 
       {/* CTA si non connecté */}
-      {!token && (
+      {!isLoggedIn && (
         <section className="max-w-4xl mx-auto px-6 py-24 text-center">
           <div className="bg-zinc-900 border border-white/5 rounded-2xl p-12">
             <div className="bg-[#ec1d24] text-white font-black text-3xl px-3 py-1 inline-block mb-6 tracking-tighter">

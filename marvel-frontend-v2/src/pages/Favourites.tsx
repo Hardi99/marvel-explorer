@@ -7,13 +7,12 @@ import type { Favourite } from '../api/favourites';
 import { Heart, User, BookOpen } from 'lucide-react';
 
 function FavouriteCard({ fav }: { fav: Favourite }) {
-  const { token } = useAuthStore();
   const queryClient = useQueryClient();
   const imgUrl = `${fav.thumbnailPath}.${fav.thumbnailExtension}`;
   const href = fav.itemType === 'character' ? `/character/${fav.itemId}` : `/comic/${fav.itemId}`;
 
   const remove = useMutation({
-    mutationFn: () => removeFavourite(token!, fav.itemId),
+    mutationFn: () => removeFavourite(fav.itemId),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['favourites'] }),
   });
 
@@ -63,12 +62,12 @@ function FavouriteCard({ fav }: { fav: Favourite }) {
 
 export default function Favourites() {
   const { favourites } = useFavourites();
-  const { token } = useAuthStore();
+  const { isLoggedIn } = useAuthStore();
 
   const characters = favourites.filter((f) => f.itemType === 'character');
   const comics = favourites.filter((f) => f.itemType === 'comic');
 
-  if (!token) {
+  if (!isLoggedIn) {
     return (
       <div className="max-w-4xl mx-auto px-6 py-24 text-center">
         <p className="text-white/50 mb-4">Connecte-toi pour voir tes favoris.</p>

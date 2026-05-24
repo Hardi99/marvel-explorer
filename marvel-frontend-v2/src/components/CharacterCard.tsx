@@ -3,7 +3,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import type { Character } from '../types';
 import { FavouriteButton } from './FavouriteButton';
 import { useFavourites } from '../hooks/useFavourites';
-import { useAuthStore } from '../store/auth';
 import { getCharacter, getComicsByCharacter } from '../api/characters';
 
 interface Props {
@@ -16,12 +15,10 @@ export function CharacterCard({ character }: Props) {
   const imgUrl = `${character.thumbnail.path}.${character.thumbnail.extension}`;
   const { isFavourite } = useFavourites();
   const queryClient = useQueryClient();
-  const { token } = useAuthStore();
 
   const prefetch = () => {
-    if (!token) return;
-    queryClient.prefetchQuery({ queryKey: ['character', character._id], queryFn: () => getCharacter(token, character._id), staleTime: STALE });
-    queryClient.prefetchQuery({ queryKey: ['character-comics', character._id], queryFn: () => getComicsByCharacter(token, character._id), staleTime: STALE });
+    queryClient.prefetchQuery({ queryKey: ['character', character._id], queryFn: () => getCharacter(character._id), staleTime: STALE });
+    queryClient.prefetchQuery({ queryKey: ['character-comics', character._id], queryFn: () => getComicsByCharacter(character._id), staleTime: STALE });
   };
 
   return (
