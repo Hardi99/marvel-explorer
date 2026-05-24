@@ -58,12 +58,13 @@ userRoutes.post('/user/login', zValidator('json', loginSchema), async (c) => {
     process.env.JWT_SECRET!
   );
 
+  const isProd = process.env.NODE_ENV === 'production';
   setCookie(c, 'auth_token', token, {
     httpOnly: true,
-    sameSite: 'Strict',
+    sameSite: isProd ? 'None' : 'Strict',
     path: '/',
     maxAge: JWT_EXPIRY_SECONDS,
-    secure: process.env.NODE_ENV === 'production',
+    secure: isProd,
   });
 
   return c.json({ username: user.username });
