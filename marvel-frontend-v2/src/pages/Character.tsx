@@ -10,19 +10,19 @@ import { ChevronLeft } from 'lucide-react';
 
 export default function Character() {
   const { id } = useParams<{ id: string }>();
-  const { token } = useAuthStore();
+  const { isLoggedIn } = useAuthStore();
   const { isFavourite } = useFavourites();
 
   const { data: character, isLoading, isError } = useQuery({
     queryKey: ['character', id],
-    queryFn: () => getCharacter(token!, id!),
-    enabled: !!token && !!id,
+    queryFn: () => getCharacter(id!),
+    enabled: isLoggedIn && !!id,
   });
 
   const { data: comicsData, isLoading: comicsLoading } = useQuery({
     queryKey: ['character-comics', id],
-    queryFn: () => getComicsByCharacter(token!, id!),
-    enabled: !!token && !!id,
+    queryFn: () => getComicsByCharacter(id!),
+    enabled: isLoggedIn && !!id,
   });
 
   if (isLoading) return <PageSpinner />;

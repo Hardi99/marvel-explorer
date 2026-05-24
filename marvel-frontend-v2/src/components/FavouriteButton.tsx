@@ -18,14 +18,14 @@ interface Props {
 export function FavouriteButton({
   itemId, itemType, name, thumbnailPath, thumbnailExtension, isFavourite, className,
 }: Props) {
-  const { token } = useAuthStore();
+  const { isLoggedIn } = useAuthStore();
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: () =>
       isFavourite
-        ? removeFavourite(token!, itemId)
-        : addFavourite(token!, { itemId, itemType, name, thumbnailPath, thumbnailExtension }),
+        ? removeFavourite(itemId)
+        : addFavourite({ itemId, itemType, name, thumbnailPath, thumbnailExtension }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['favourites'] });
       if (isFavourite) {
@@ -39,7 +39,7 @@ export function FavouriteButton({
     },
   });
 
-  if (!token) return null;
+  if (!isLoggedIn) return null;
 
   return (
     <button

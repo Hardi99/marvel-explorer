@@ -3,7 +3,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import type { Comic } from '../types';
 import { FavouriteButton } from './FavouriteButton';
 import { useFavourites } from '../hooks/useFavourites';
-import { useAuthStore } from '../store/auth';
 import { getComic } from '../api/comics';
 
 interface Props {
@@ -16,12 +15,11 @@ export function ComicCard({ comic }: Props) {
   const imgUrl = `${comic.thumbnail.path}.${comic.thumbnail.extension}`;
   const { isFavourite } = useFavourites();
   const queryClient = useQueryClient();
-  const { token } = useAuthStore();
 
   return (
     <Link
       to={`/comic/${comic._id}`}
-      onMouseEnter={() => token && queryClient.prefetchQuery({ queryKey: ['comic', comic._id], queryFn: () => getComic(token, comic._id), staleTime: STALE })}
+      onMouseEnter={() => queryClient.prefetchQuery({ queryKey: ['comic', comic._id], queryFn: () => getComic(comic._id), staleTime: STALE })}
       className="group relative overflow-hidden rounded-lg bg-zinc-900 aspect-[2/3] block"
     >
       <img

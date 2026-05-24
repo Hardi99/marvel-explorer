@@ -11,7 +11,7 @@ import { useDebounce } from '../hooks/useDebounce';
 const ITEMS_PER_PAGE = 20;
 
 export default function Characters() {
-  const { token } = useAuthStore();
+  const { isLoggedIn } = useAuthStore();
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const debouncedSearch = useDebounce(search, 400);
@@ -25,12 +25,12 @@ export default function Characters() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['characters', debouncedSearch, page],
     queryFn: () =>
-      getCharacters(token!, {
+      getCharacters({
         name: debouncedSearch,
         skip: (page - 1) * ITEMS_PER_PAGE,
         limit: ITEMS_PER_PAGE,
       }),
-    enabled: !!token,
+    enabled: isLoggedIn,
   });
 
   const totalPages = useMemo(() => {

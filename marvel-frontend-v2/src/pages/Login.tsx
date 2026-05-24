@@ -18,7 +18,7 @@ export default function Login() {
   const mutation = useMutation({
     mutationFn: login,
     onSuccess: (data) => {
-      setAuth(data.token, data.username);
+      setAuth(data.username);
       navigate(from, { replace: true });
     },
     onError: (err: Error) => {
