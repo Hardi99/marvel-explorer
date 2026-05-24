@@ -3,12 +3,13 @@ import { useFavourites } from '../hooks/useFavourites';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '../store/auth';
 import { removeFavourite } from '../api/favourites';
+import { thumbnailUrl } from '../utils/thumbnail';
 import type { Favourite } from '../api/favourites';
 import { Heart, User, BookOpen } from 'lucide-react';
 
 function FavouriteCard({ fav }: { fav: Favourite }) {
   const queryClient = useQueryClient();
-  const imgUrl = `${fav.thumbnailPath}.${fav.thumbnailExtension}`;
+  const imgUrl = thumbnailUrl(fav.thumbnailPath, fav.thumbnailExtension);
   const href = fav.itemType === 'character' ? `/character/${fav.itemId}` : `/comic/${fav.itemId}`;
 
   const remove = useMutation({

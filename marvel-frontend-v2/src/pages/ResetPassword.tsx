@@ -66,7 +66,9 @@ export default function ResetPassword() {
           <Input
             label="Nouveau mot de passe"
             id="password"
+            name="password"
             type="password"
+            autoComplete="new-password"
             placeholder="••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -76,7 +78,9 @@ export default function ResetPassword() {
           <Input
             label="Confirmer le mot de passe"
             id="confirm"
+            name="confirm"
             type="password"
+            autoComplete="new-password"
             placeholder="••••••••"
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}

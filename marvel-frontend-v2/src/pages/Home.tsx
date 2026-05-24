@@ -5,6 +5,7 @@ import Autoplay from 'embla-carousel-autoplay';
 import { useAuthStore } from '../store/auth';
 import { getCharacters } from '../api/characters';
 import { getComics } from '../api/comics';
+import { thumbnailUrl } from '../utils/thumbnail';
 import { Button } from '../components/ui/Button';
 import { ChevronRight } from 'lucide-react';
 
@@ -50,7 +51,7 @@ export default function Home() {
           <div className="absolute inset-0 overflow-hidden" ref={emblaRef}>
             <div className="flex h-full">
               {heroCharacters.map((char) => {
-                const imgUrl = `${char.thumbnail.path}.${char.thumbnail.extension}`;
+                const imgUrl = thumbnailUrl(char.thumbnail.path, char.thumbnail.extension);
                 return (
                   <div key={char._id} className="flex-none w-full h-full relative">
                     <img
@@ -120,7 +121,7 @@ export default function Home() {
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {heroCharacters.slice(0, 10).map((char) => {
-              const imgUrl = `${char.thumbnail.path}.${char.thumbnail.extension}`;
+              const imgUrl = thumbnailUrl(char.thumbnail.path, char.thumbnail.extension);
               return (
                 <Link
                   key={char._id}
@@ -165,7 +166,7 @@ export default function Home() {
           <div className="overflow-hidden" ref={emblaComicsRef}>
             <div className="flex gap-4 px-6 ml-[max(0px,calc((100vw-1280px)/2))]">
               {featuredComics.map((comic) => {
-                const imgUrl = `${comic.thumbnail.path}.${comic.thumbnail.extension}`;
+                const imgUrl = thumbnailUrl(comic.thumbnail.path, comic.thumbnail.extension);
                 return (
                   <Link
                     key={comic._id}
