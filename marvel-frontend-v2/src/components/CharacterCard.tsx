@@ -4,6 +4,7 @@ import type { Character } from '../types';
 import { FavouriteButton } from './FavouriteButton';
 import { useFavourites } from '../hooks/useFavourites';
 import { getCharacter, getComicsByCharacter } from '../api/characters';
+import { thumbnailUrl } from '../utils/thumbnail';
 
 interface Props {
   character: Character;
@@ -12,7 +13,7 @@ interface Props {
 const STALE = 5 * 60 * 1000;
 
 export function CharacterCard({ character }: Props) {
-  const imgUrl = `${character.thumbnail.path}.${character.thumbnail.extension}`;
+  const imgUrl = thumbnailUrl(character.thumbnail.path, character.thumbnail.extension);
   const { isFavourite } = useFavourites();
   const queryClient = useQueryClient();
 

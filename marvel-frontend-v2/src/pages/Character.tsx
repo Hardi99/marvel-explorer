@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '../store/auth';
 import { getCharacter, getComicsByCharacter } from '../api/characters';
+import { thumbnailUrl } from '../utils/thumbnail';
 import { PageSpinner } from '../components/ui/Spinner';
 import { FavouriteButton } from '../components/FavouriteButton';
 import { ComicCard } from '../components/ComicCard';
@@ -38,7 +39,7 @@ export default function Character() {
     );
   }
 
-  const imgUrl = `${character.thumbnail.path}.${character.thumbnail.extension}`;
+  const imgUrl = thumbnailUrl(character.thumbnail.path, character.thumbnail.extension);
   const comics = comicsData?.results ?? [];
 
   return (

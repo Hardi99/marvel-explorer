@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '../store/auth';
 import { getComic } from '../api/comics';
+import { thumbnailUrl } from '../utils/thumbnail';
 import { PageSpinner } from '../components/ui/Spinner';
 import { FavouriteButton } from '../components/FavouriteButton';
 import { useFavourites } from '../hooks/useFavourites';
@@ -31,7 +32,7 @@ export default function Comic() {
     );
   }
 
-  const imgUrl = `${comic.thumbnail.path}.${comic.thumbnail.extension}`;
+  const imgUrl = thumbnailUrl(comic.thumbnail.path, comic.thumbnail.extension);
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-10">

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { signup } from '../api/auth';
 import { Input } from '../components/ui/Input';
 import { Button } from '../components/ui/Button';
@@ -19,6 +20,7 @@ export default function Signup() {
   const mutation = useMutation({
     mutationFn: signup,
     onSuccess: () => {
+      toast.success('Compte créé !', { description: 'Un email de bienvenue t\'a été envoyé.' });
       navigate('/user/login');
     },
     onError: (err: Error) => {
@@ -63,7 +65,9 @@ export default function Signup() {
           <Input
             label="Nom d'utilisateur"
             id="username"
+            name="username"
             type="text"
+            autoComplete="username"
             placeholder="TonyStark"
             value={form.username}
             onChange={update('username')}
@@ -73,7 +77,9 @@ export default function Signup() {
           <Input
             label="Email"
             id="email"
+            name="email"
             type="email"
+            autoComplete="email"
             placeholder="tony@stark.com"
             value={form.email}
             onChange={update('email')}
@@ -83,7 +89,9 @@ export default function Signup() {
           <Input
             label="Mot de passe"
             id="password"
+            name="password"
             type="password"
+            autoComplete="new-password"
             placeholder="••••••••"
             value={form.password}
             onChange={update('password')}
@@ -93,7 +101,9 @@ export default function Signup() {
           <Input
             label="Confirmer le mot de passe"
             id="confirmPassword"
+            name="confirmPassword"
             type="password"
+            autoComplete="new-password"
             placeholder="••••••••"
             value={form.confirmPassword}
             onChange={update('confirmPassword')}
