@@ -18,4 +18,11 @@
   #root {
     min-height: 100vh;
   }
+
+  /* Les <Link> de React Router sont inline par défaut : quand ils enveloppent un
+     bouton, la cible tactile mesurée se réduit à un filet (échec WCAG 2.5.8 target-size).
+     On force l'ancre à épouser la taille du bouton qu'elle contient. */
+  a:has(> button) {
+    display: inline-flex;
+  }
 }
