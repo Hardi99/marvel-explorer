@@ -1,13 +1,17 @@
+import { lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import useEmblaCarousel from 'embla-carousel-react';
-import Autoplay from 'embla-carousel-autoplay';
 import { useAuthStore } from '../store/auth';
 import { getCharacters } from '../api/characters';
 import { getComics } from '../api/comics';
 import { thumbnailUrl } from '../utils/thumbnail';
 import { Button } from '../components/ui/Button';
 import { ChevronRight } from 'lucide-react';
+
+// Carousels Embla chargés à la demande : ils ne rendent que côté connecté, donc
+// embla-carousel reste hors du bundle initial de la landing anonyme (/).
+const HeroCarousel = lazy(() => import('../components/home/HeroCarousel'));
+const ComicsCarousel = lazy(() => import('../components/home/ComicsCarousel'));
 
 export default function Home() {
   const { isLoggedIn } = useAuthStore();
@@ -23,9 +27,6 @@ export default function Home() {
     queryFn: () => getComics({ limit: 10 }),
     enabled: isLoggedIn,
   });
-
-  const [emblaRef] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 5000 })]);
-  const [emblaComicsRef] = useEmblaCarousel({ loop: false, dragFree: true });
 
   const heroCharacters = charsData?.results?.slice(0, 6) ?? [];
   const featuredComics = comicsData?.results?.slice(0, 10) ?? [];
@@ -46,24 +47,11 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-b from-[#ec1d24]/20 via-transparent to-[#111111]" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/20" />
 
-        {/* Carousel */}
+        {/* Carousel (arrière-plan décoratif, chargé à la demande) */}
         {heroCharacters.length > 0 && (
-          <div className="absolute inset-0 overflow-hidden" ref={emblaRef}>
-            <div className="flex h-full">
-              {heroCharacters.map((char) => {
-                const imgUrl = thumbnailUrl(char.thumbnail.path, char.thumbnail.extension);
-                return (
-                  <div key={char._id} className="flex-none w-full h-full relative">
-                    <img
-                      src={imgUrl}
-                      alt={char.name}
-                      className="absolute right-0 h-full w-1/2 object-cover object-top opacity-40"
-                    />
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+          <Suspense fallback={null}>
+            <HeroCarousel characters={heroCharacters} />
+          </Suspense>
         )}
 
         {/* Hero content */}
@@ -163,32 +151,9 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="overflow-hidden" ref={emblaComicsRef}>
-            <div className="flex gap-4 px-6 ml-[max(0px,calc((100vw-1280px)/2))]">
-              {featuredComics.map((comic) => {
-                const imgUrl = thumbnailUrl(comic.thumbnail.path, comic.thumbnail.extension);
-                return (
-                  <Link
-                    key={comic._id}
-                    to={`/comic/${comic._id}`}
-                    className="group flex-none w-36 md:w-44 relative overflow-hidden rounded-lg aspect-[2/3] bg-zinc-900"
-                  >
-                    <img
-                      src={imgUrl}
-                      alt={comic.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <div className="absolute top-0 left-0 right-0 h-0.5 bg-[#ec1d24] transform -translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                    <div className="absolute bottom-0 left-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <p className="text-white font-bold text-xs line-clamp-2">{comic.title}</p>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
+          <Suspense fallback={<div className="h-[264px] md:h-[264px]" />}>
+            <ComicsCarousel comics={featuredComics} />
+          </Suspense>
         </section>
       )}
 

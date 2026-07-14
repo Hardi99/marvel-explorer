@@ -1,20 +1,23 @@
+import { lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'sonner';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { Layout } from './components/layout/Layout';
 import { ProtectedRoute } from './components/ProtectedRoute';
+// Home reste en eager : c'est la landing page auditée (/), on évite une requête en cascade.
 import Home from './pages/Home';
-import Characters from './pages/Characters';
-import Character from './pages/Character';
-import Comics from './pages/Comics';
-import Comic from './pages/Comic';
-import Favourites from './pages/Favourites';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
-import NotFound from './pages/NotFound';
+// Les autres routes sont chargées à la demande (code-splitting) pour alléger le bundle initial.
+const Characters = lazy(() => import('./pages/Characters'));
+const Character = lazy(() => import('./pages/Character'));
+const Comics = lazy(() => import('./pages/Comics'));
+const Comic = lazy(() => import('./pages/Comic'));
+const Favourites = lazy(() => import('./pages/Favourites'));
+const Login = lazy(() => import('./pages/Login'));
+const Signup = lazy(() => import('./pages/Signup'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
