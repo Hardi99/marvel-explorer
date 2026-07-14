@@ -1,0 +1,20 @@
+# Marvel Explorer
+
+> Application web permettant de parcourir l'univers Marvel : des milliers de personnages et de comics, avec authentification et gestion de favoris. Frontend React + TypeScript, données servies via une API proxy qui protège la clé Marvel.
+
+## Pages
+
+- [Accueil](https://marvel-explorer-app.vercel.app/): présentation et mise en avant de personnages et comics
+- [Personnages](https://marvel-explorer-app.vercel.app/characters): liste paginée et recherche de personnages Marvel
+- [Comics](https://marvel-explorer-app.vercel.app/comics): liste paginée et recherche de comics Marvel
+- [Favoris](https://marvel-explorer-app.vercel.app/favourites): personnages et comics enregistrés par l'utilisateur (connexion requise)
+
+## Compte
+
+- [Connexion](https://marvel-explorer-app.vercel.app/user/login): accès au compte utilisateur
+- [Inscription](https://marvel-explorer-app.vercel.app/user/signup): création d'un compte
+
+## Notes
+
+- L'accès aux données (personnages, comics) nécessite une authentification.
+- Les images des personnages et comics proviennent de l'API officielle Marvel.
