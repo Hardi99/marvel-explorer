@@ -4,6 +4,16 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM = 'Marvel Explorer <onboarding@resend.dev>';
 const APP_URL = process.env.FRONTEND_URL ?? 'http://localhost:5173';
 
+// Tout texte venant d'un utilisateur passe par ici avant d'entrer dans le HTML de l'e-mail.
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function baseTemplate(content: string) {
   return `<!DOCTYPE html>
 <html lang="fr">
@@ -16,7 +26,7 @@ function baseTemplate(content: string) {
         <!-- Header -->
         <tr>
           <td style="background:#ec1d24;padding:22px 32px;">
-            <span style="color:#ffffff;font-weight:900;font-size:26px;letter-spacing:-1px;text-transform:uppercase;font-family:Arial,sans-serif;">MARVEL</span>
+            <span style="color:#ffffff;font-weight:900;font-size:26px;letter-spacing:-1px;text-transform:uppercase;font-family:'Arial Black',Arial,sans-serif;">MARVEL</span>
           </td>
         </tr>
 
@@ -50,8 +60,8 @@ function ctaButton(href: string, label: string) {
 export async function sendWelcomeEmail(to: string, username: string) {
   const content = `
     <div style="width:40px;height:3px;background:#ec1d24;margin-bottom:24px;"></div>
-    <h1 style="margin:0 0 8px;color:#ffffff;font-size:28px;font-weight:900;text-transform:uppercase;letter-spacing:-0.5px;font-family:Arial,sans-serif;">
-      Bienvenue, ${username}
+    <h1 style="margin:0 0 8px;color:#ffffff;font-size:28px;font-weight:900;text-transform:uppercase;letter-spacing:-0.5px;font-family:'Arial Black',Arial,sans-serif;">
+      Bienvenue, ${escapeHtml(username)}
     </h1>
     <p style="margin:0 0 32px;color:rgba(255,255,255,0.5);font-size:15px;line-height:1.6;">
       Ton compte Marvel Explorer est prêt. Explore des milliers de personnages et de comics de l'univers Marvel.
@@ -75,11 +85,11 @@ export async function sendResetEmail(to: string, username: string, token: string
 
   const content = `
     <div style="width:40px;height:3px;background:#ec1d24;margin-bottom:24px;"></div>
-    <h1 style="margin:0 0 8px;color:#ffffff;font-size:28px;font-weight:900;text-transform:uppercase;letter-spacing:-0.5px;font-family:Arial,sans-serif;">
+    <h1 style="margin:0 0 8px;color:#ffffff;font-size:28px;font-weight:900;text-transform:uppercase;letter-spacing:-0.5px;font-family:'Arial Black',Arial,sans-serif;">
       Réinitialisation
     </h1>
     <p style="margin:0 0 8px;color:rgba(255,255,255,0.5);font-size:15px;line-height:1.6;">
-      Bonjour ${username}, une demande de réinitialisation de mot de passe a été faite pour ton compte.
+      Bonjour ${escapeHtml(username)}, une demande de réinitialisation de mot de passe a été faite pour ton compte.
     </p>
     <p style="margin:0 0 32px;color:rgba(255,255,255,0.5);font-size:15px;line-height:1.6;">
       Ce lien est valable <strong style="color:rgba(255,255,255,0.8);">1 heure</strong>.
