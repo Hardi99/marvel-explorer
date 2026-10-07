@@ -18,6 +18,8 @@ const Signup = lazy(() => import('./pages/Signup'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const NotFound = lazy(() => import('./pages/NotFound'));
+const LegalNotice = lazy(() => import('./pages/Legal').then((m) => ({ default: m.LegalNotice })));
+const PrivacyPolicy = lazy(() => import('./pages/Legal').then((m) => ({ default: m.PrivacyPolicy })));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,19 +37,21 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route element={<Layout />}>
-              {/* Routes publiques */}
+              {/* Routes publiques : tout le catalogue se consulte sans compte */}
               <Route path="/" element={<Home />} />
+              <Route path="/characters" element={<Characters />} />
+              <Route path="/character/:id" element={<Character />} />
+              <Route path="/comics" element={<Comics />} />
+              <Route path="/comic/:id" element={<Comic />} />
+              <Route path="/mentions-legales" element={<LegalNotice />} />
+              <Route path="/confidentialite" element={<PrivacyPolicy />} />
               <Route path="/user/login" element={<Login />} />
               <Route path="/user/signup" element={<Signup />} />
               <Route path="/user/forgot-password" element={<ForgotPassword />} />
               <Route path="/user/reset-password" element={<ResetPassword />} />
 
-              {/* Routes protégées */}
+              {/* Seuls les favoris demandent un compte */}
               <Route element={<ProtectedRoute />}>
-                <Route path="/characters" element={<Characters />} />
-                <Route path="/character/:id" element={<Character />} />
-                <Route path="/comics" element={<Comics />} />
-                <Route path="/comic/:id" element={<Comic />} />
                 <Route path="/favourites" element={<Favourites />} />
               </Route>
 
@@ -61,9 +65,13 @@ function App() {
           position="bottom-right"
           toastOptions={{
             style: {
-              background: '#1a1a1a',
-              border: '1px solid rgba(255,255,255,0.08)',
-              color: '#f1f1f1',
+              background: '#ffd23f',
+              border: '3px solid #0b0b0b',
+              borderRadius: 0,
+              boxShadow: '6px 6px 0 #0b0b0b',
+              color: '#0b0b0b',
+              fontFamily: 'var(--font-sans)',
+              fontSize: '17px',
             },
           }}
         />

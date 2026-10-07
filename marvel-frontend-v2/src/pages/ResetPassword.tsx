@@ -27,7 +27,7 @@ export default function ResetPassword() {
       <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4">
         <div className="text-center">
           <p className="text-red-400 mb-4">Lien invalide ou expiré.</p>
-          <Link to="/user/forgot-password" className="text-[#ec1d24] hover:underline text-sm">
+          <Link to="/user/forgot-password" className="text-marvel hover:underline text-sm">
             Demander un nouveau lien
           </Link>
         </div>
@@ -49,14 +49,14 @@ export default function ResetPassword() {
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-10">
-          <div className="bg-[#ec1d24] text-white font-black text-3xl px-3 py-1 inline-block tracking-tighter mb-4">
+          <div className="bg-marvel text-white font-display text-3xl px-3 pt-1.5 pb-1 inline-block mb-4">
             MARVEL
           </div>
-          <h1 className="text-2xl font-black uppercase text-white">Nouveau mot de passe</h1>
-          <p className="text-white/40 text-sm mt-1">Choisis un mot de passe d'au moins 6 caractères</p>
+          <h1 className="text-2xl font-display font-normal uppercase text-white">Nouveau mot de passe</h1>
+          <p className="text-white/40 text-sm mt-1">Choisis un mot de passe d'au moins 8 caractères</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-zinc-900 border border-white/5 rounded-xl p-8 flex flex-col gap-5">
+        <form onSubmit={handleSubmit} className="bg-panel border-4 border-white shadow-[8px_8px_0_#ec1d24] p-8 flex flex-col gap-5">
           {(fieldError || mutation.isError) && (
             <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded">
               {fieldError || (mutation.error as Error).message}
@@ -72,6 +72,7 @@ export default function ResetPassword() {
             placeholder="••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            minLength={8}
             required
           />
 

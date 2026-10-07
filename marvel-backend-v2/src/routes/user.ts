@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 import { eq, or } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
-import { randomBytes } from 'crypto';
+import { randomBytes, createHash } from 'crypto';
 import { sign } from 'hono/jwt';
 import { setCookie, deleteCookie } from 'hono/cookie';
 import { db } from '../db/index.js';
@@ -11,6 +11,14 @@ import { sendWelcomeEmail, sendResetEmail } from '../utils/email.js';
 import type { AppVariables } from '../types/context.js';
 
 const JWT_EXPIRY_SECONDS = 60 * 60 * 24; // 24h
+
+// Hash factice comparé quand l'e-mail est inconnu : la réponse prend le même temps
+// qu'un mauvais mot de passe, on ne peut donc pas deviner quels comptes existent.
+const DUMMY_HASH = bcrypt.hashSync('marvel-explorer-timing-guard', 10);
+
+// Le jeton de réinitialisation n'est stocké qu'en empreinte : une fuite de la base
+// ne permet pas de changer le mot de passe des comptes.
+const hashToken = (token: string) => createHash('sha256').update(token).digest('hex');
 
 const userRoutes = new Hono<{ Variables: AppVariables }>();
 
@@ -44,12 +52,8 @@ userRoutes.post('/user/login', zValidator('json', loginSchema), async (c) => {
     .where(eq(usersTable.email, email))
     .limit(1);
 
-  if (!user) {
-    return c.json({ error: 'Email ou mot de passe invalide' }, 401);
-  }
-
-  const valid = await bcrypt.compare(password, user.hash);
-  if (!valid) {
+  const valid = await bcrypt.compare(password, user?.hash ?? DUMMY_HASH);
+  if (!user || !valid) {
     return c.json({ error: 'Email ou mot de passe invalide' }, 401);
   }
 
@@ -58,13 +62,14 @@ userRoutes.post('/user/login', zValidator('json', loginSchema), async (c) => {
     process.env.JWT_SECRET!
   );
 
-  const isProd = process.env.NODE_ENV === 'production';
+  // Le front appelle l'API via sa propre adresse (/api, redirigé par Vercel) : le cookie est
+  // interne au site, donc `Lax` suffit et Safari ne le bloque plus comme cookie tiers.
   setCookie(c, 'auth_token', token, {
     httpOnly: true,
-    sameSite: isProd ? 'None' : 'Strict',
+    sameSite: 'Lax',
     path: '/',
     maxAge: JWT_EXPIRY_SECONDS,
-    secure: isProd,
+    secure: process.env.NODE_ENV === 'production',
   });
 
   return c.json({ username: user.username });
@@ -94,7 +99,7 @@ userRoutes.post('/user/forgot-password', zValidator('json', forgotPasswordSchema
 
   await db
     .update(usersTable)
-    .set({ resetToken: token, resetTokenExpiry: expiry })
+    .set({ resetToken: hashToken(token), resetTokenExpiry: expiry })
     .where(eq(usersTable.id, user.id));
 
   sendResetEmail(email, user.username, token).catch(console.error);
@@ -108,7 +113,7 @@ userRoutes.post('/user/reset-password', zValidator('json', resetPasswordSchema),
   const [user] = await db
     .select()
     .from(usersTable)
-    .where(eq(usersTable.resetToken, token))
+    .where(eq(usersTable.resetToken, hashToken(token)))
     .limit(1);
 
   if (!user || !user.resetTokenExpiry || user.resetTokenExpiry < new Date()) {

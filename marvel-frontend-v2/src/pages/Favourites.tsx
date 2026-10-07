@@ -27,7 +27,7 @@ function FavouriteCard({ fav }: { fav: Favourite }) {
           loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
-        <div className="absolute top-0 left-0 right-0 h-1 bg-[#ec1d24] transform -translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-marvel transform -translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
         <div className="absolute bottom-0 left-0 right-0 p-3">
           <p className="text-white/40 text-xs uppercase tracking-wider mb-1">
             {fav.itemType === 'character' ? 'Personnage' : 'Comic'}
@@ -52,7 +52,7 @@ function FavouriteCard({ fav }: { fav: Favourite }) {
       <button
         onClick={() => remove.mutate()}
         disabled={remove.isPending}
-        className="absolute top-2 right-2 p-2 rounded-full bg-[#ec1d24] text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#c5151b] disabled:opacity-50"
+        className="absolute top-2 right-2 p-2 rounded-full bg-marvel text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#c5151b] disabled:opacity-50"
         aria-label="Retirer des favoris"
       >
         <Heart size={14} fill="currentColor" />
@@ -72,7 +72,7 @@ export default function Favourites() {
     return (
       <div className="max-w-4xl mx-auto px-6 py-24 text-center">
         <p className="text-white/50 mb-4">Connecte-toi pour voir tes favoris.</p>
-        <Link to="/user/login" className="text-[#ec1d24] hover:underline">Se connecter</Link>
+        <Link to="/user/login" className="text-marvel hover:underline">Se connecter</Link>
       </div>
     );
   }
@@ -81,8 +81,8 @@ export default function Favourites() {
     return (
       <div className="max-w-7xl mx-auto px-6 py-10">
         <div className="mb-8">
-          <h1 className="text-3xl font-black uppercase tracking-wide text-white mb-1">Favoris</h1>
-          <div className="h-1 w-12 bg-[#ec1d24]" />
+          <h1 className="font-display font-normal text-5xl uppercase text-white mb-1">Favoris</h1>
+          <div className="h-1 w-12 bg-marvel" />
         </div>
         <div className="flex flex-col items-center justify-center py-24 text-center">
           <Heart size={48} className="text-white/10 mb-4" />
@@ -98,16 +98,16 @@ export default function Favourites() {
   return (
     <div className="max-w-7xl mx-auto px-6 py-10">
       <div className="mb-10">
-        <h1 className="text-3xl font-black uppercase tracking-wide text-white mb-1">Favoris</h1>
-        <div className="h-1 w-12 bg-[#ec1d24]" />
+        <h1 className="font-display font-normal text-5xl uppercase text-white mb-1">Favoris</h1>
+        <div className="h-1 w-12 bg-marvel" />
       </div>
 
       {/* Personnages */}
       {characters.length > 0 && (
         <section className="mb-12">
           <div className="flex items-center gap-3 mb-6">
-            <User size={16} className="text-[#ec1d24]" />
-            <h2 className="text-lg font-black uppercase tracking-wide text-white">
+            <User size={16} className="text-marvel" />
+            <h2 className="text-lg font-display font-normal uppercase tracking-wide text-white">
               Personnages
             </h2>
             <span className="text-white/30 text-sm">{characters.length}</span>
@@ -125,8 +125,8 @@ export default function Favourites() {
       {comics.length > 0 && (
         <section>
           <div className="flex items-center gap-3 mb-6">
-            <BookOpen size={16} className="text-[#ec1d24]" />
-            <h2 className="text-lg font-black uppercase tracking-wide text-white">
+            <BookOpen size={16} className="text-marvel" />
+            <h2 className="text-lg font-display font-normal uppercase tracking-wide text-white">
               Comics
             </h2>
             <span className="text-white/30 text-sm">{comics.length}</span>

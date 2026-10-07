@@ -1,136 +1,165 @@
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { useAuthStore } from '../store/auth';
-import { getCharacter, getComicsByCharacter } from '../api/characters';
+import { ArrowLeft } from 'lucide-react';
+import { getCharacter, getCharacterExtras, getComicsByCharacter } from '../api/characters';
 import { thumbnailUrl } from '../utils/thumbnail';
+import { splitCharacterName } from '../utils/characterName';
+import { parseComic } from '../utils/comicInfo';
 import { PageSpinner } from '../components/ui/Spinner';
 import { FavouriteButton } from '../components/FavouriteButton';
-import { ComicCard } from '../components/ComicCard';
+import { ComicsWall } from '../components/ComicsWall';
+import { MovieStrip } from '../components/character/MovieStrip';
 import { useFavourites } from '../hooks/useFavourites';
-import { ChevronLeft } from 'lucide-react';
+
+// Onomatopée par défaut pour les personnages hors sélection, stable d'une visite à l'autre.
+const SOUNDS = ['POW!', 'BAM!', 'WHAM!', 'KRAK!', 'ZAP!', 'BOOM!'];
+const soundFor = (id: string) => SOUNDS[parseInt(id.slice(-4), 16) % SOUNDS.length]!;
 
 export default function Character() {
   const { id } = useParams<{ id: string }>();
-  const { isLoggedIn } = useAuthStore();
   const { isFavourite } = useFavourites();
 
   const { data: character, isLoading, isError } = useQuery({
     queryKey: ['character', id],
     queryFn: () => getCharacter(id!),
-    enabled: isLoggedIn && !!id,
+    enabled: !!id,
   });
 
-  const { data: comicsData, isLoading: comicsLoading } = useQuery({
+  const { data: comicsData } = useQuery({
     queryKey: ['character-comics', id],
     queryFn: () => getComicsByCharacter(id!),
-    enabled: isLoggedIn && !!id,
+    enabled: !!id,
+  });
+
+  const { data: extras } = useQuery({
+    queryKey: ['character-extras', id],
+    queryFn: () => getCharacterExtras(id!),
+    enabled: !!id,
+    staleTime: 24 * 60 * 60 * 1000,
   });
 
   if (isLoading) return <PageSpinner />;
 
   if (isError || !character) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-20 text-center">
-        <p className="text-red-400">Personnage introuvable.</p>
-        <Link to="/characters" className="text-[#ec1d24] mt-4 inline-flex items-center gap-1">
-          <ChevronLeft size={16} /> Retour
+      <div className="max-w-3xl mx-auto px-6 py-24 flex flex-col items-center gap-6 text-center">
+        <p className="bg-caption text-ink border-[3px] border-ink px-4 py-2 font-bold text-lg uppercase -rotate-2">
+          Ce personnage a disparu dans le multivers…
+        </p>
+        <Link to="/characters" className="font-bold text-lg tracking-[2px] uppercase underline underline-offset-[6px]">
+          Tous les personnages →
         </Link>
       </div>
     );
   }
 
-  const imgUrl = thumbnailUrl(character.thumbnail.path, character.thumbnail.extension);
-  const comics = comicsData?.results ?? [];
+  const { name, detail } = splitCharacterName(character.name);
+  const comics = comicsData?.results;
+  const movies = extras?.movies ?? [];
 
   return (
     <div>
-      {/* Hero banner */}
-      <div className="relative h-72 md:h-96 overflow-hidden bg-zinc-900">
-        <img
-          src={imgUrl}
-          alt={character.name}
-          className="w-full h-full object-cover object-top opacity-30"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#111111] to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#111111] via-transparent to-transparent" />
-      </div>
+      {/* EN-TÊTE DE FICHE : case de BD */}
+      <section className="relative bg-marvel overflow-hidden [clip-path:polygon(0_0,100%_0,100%_94%,0_100%)]">
+        <div className="dots absolute inset-0 opacity-55" />
+        <div className="absolute inset-0 bg-[linear-gradient(260deg,#0b0b0b_0%,rgb(11_11_11/0.9)_40%,rgb(11_11_11/0)_70%)]" />
 
-      {/* Content */}
-      <div className="max-w-7xl mx-auto px-6 py-8 -mt-24 relative z-10">
-        <Link
-          to="/characters"
-          className="inline-flex items-center gap-1 text-white/40 hover:text-white text-sm transition-colors mb-6"
-        >
-          <ChevronLeft size={16} /> Personnages
-        </Link>
+        <div className="relative max-w-[1320px] mx-auto px-6 pt-7 pb-[120px] flex flex-col gap-7">
+          <Link to="/characters" className="self-start flex items-center gap-2 font-bold text-[17px] tracking-[2px] uppercase hover:text-caption transition-colors">
+            <ArrowLeft size={18} strokeWidth={3} aria-hidden="true" />
+            Tous les personnages
+          </Link>
 
-        <div className="flex flex-col md:flex-row gap-10">
-          {/* Portrait */}
-          <div className="flex-shrink-0 w-48 md:w-64">
-            <div className="relative">
-              <img
-                src={imgUrl}
-                alt={character.name}
-                className="w-full rounded-lg shadow-2xl shadow-black/50 border border-white/5 object-cover aspect-[3/4] object-top"
-              />
-              <FavouriteButton
-                itemId={character._id}
-                itemType="character"
-                name={character.name}
-                thumbnailPath={character.thumbnail.path}
-                thumbnailExtension={character.thumbnail.extension}
-                isFavourite={isFavourite(character._id)}
-                className="absolute top-3 right-3"
-              />
+          <div className="flex flex-wrap items-center gap-14">
+            {/* Portrait */}
+            <div className="flex-[0_1_420px] min-w-0 relative mx-auto md:mx-0">
+              <div className="relative aspect-[3/4] border-[5px] border-ink shadow-[14px_14px_0_#0b0b0b] -rotate-2 overflow-hidden bg-panel">
+                <img
+                  src={thumbnailUrl(character.thumbnail.path, character.thumbnail.extension)}
+                  alt=""
+                  fetchPriority="high"
+                  className="absolute inset-0 w-full h-full object-cover object-[40%_20%]"
+                />
+                <div className="dots absolute inset-0 opacity-15" />
+              </div>
+              <div
+                aria-hidden="true"
+                className="starburst absolute -top-[26px] -left-[30px] w-[140px] h-[140px] bg-caption text-ink flex items-center justify-center font-comic text-[clamp(22px,2.6vw,34px)] tracking-[2px] -rotate-12"
+              >
+                {extras?.sound ?? soundFor(character._id)}
+              </div>
             </div>
-          </div>
 
-          {/* Info */}
-          <div className="flex-1">
-            <div className="h-1 w-12 bg-[#ec1d24] mb-4" />
-            <h1 className="text-4xl md:text-5xl font-black uppercase tracking-wide text-white mb-4">
-              {character.name}
-            </h1>
-
-            {character.description ? (
-              <p className="text-white/60 text-base leading-relaxed max-w-2xl">
-                {character.description}
+            {/* Identité */}
+            <div className="flex-[1_1_520px] min-w-0 flex flex-col gap-[22px]">
+              <p className="self-start bg-caption text-ink border-[3px] border-ink shadow-[6px_6px_0_#0b0b0b] px-4 py-2 font-bold text-lg tracking-[1px] uppercase -rotate-2">
+                {extras?.alias ? `Identité secrète : ${extras.alias}` : 'Dossier personnage'}
               </p>
-            ) : (
-              <p className="text-white/30 italic">Aucune description disponible.</p>
-            )}
+              <h1 className="font-display font-normal text-[clamp(56px,8vw,132px)] leading-[0.95] uppercase tracking-[-1px] break-words">
+                {name}
+              </h1>
+              {detail && !extras?.alias && (
+                <p className="-mt-3 font-display text-[clamp(22px,2.5vw,32px)] uppercase text-neutral-200">{detail}</p>
+              )}
+
+              {/* Description dans une case de narration */}
+              <div className="relative bg-white text-ink border-4 border-ink shadow-[8px_8px_0_#0b0b0b] px-[26px] pt-[26px] pb-[22px] max-w-[640px]">
+                <span className="absolute -top-4 left-[18px] bg-caption border-[3px] border-ink px-2.5 py-0.5 font-bold text-sm tracking-[1.5px] uppercase">
+                  Le dossier
+                </span>
+                <p className="text-[21px] leading-[1.4] font-medium">
+                  {character.description?.trim() ||
+                    'Les archives restent muettes sur ce personnage… Ses exploits parlent pour lui dans les comics ci-dessous.'}
+                </p>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-[18px]">
+                <FavouriteButton
+                  variant="label"
+                  itemId={character._id}
+                  itemType="character"
+                  name={name}
+                  thumbnailPath={character.thumbnail.path}
+                  thumbnailExtension={character.thumbnail.extension}
+                  isFavourite={isFavourite(character._id)}
+                />
+                <ul className="flex flex-wrap gap-2.5">
+                  {comicsData && (
+                    <li className="bg-ink border-2 border-white px-3 py-1.5 font-bold text-base tracking-[1px] uppercase">
+                      {comicsData.count} comic{comicsData.count > 1 ? 's' : ''}
+                    </li>
+                  )}
+                  {movies.length > 0 && (
+                    <li className="bg-ink border-2 border-white px-3 py-1.5 font-bold text-base tracking-[1px] uppercase">
+                      {movies.length} film{movies.length > 1 ? 's' : ''}
+                    </li>
+                  )}
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
+      </section>
 
-        {/* Comics du personnage */}
-        <div className="mt-14" id="comics">
-          <div className="flex items-center gap-3 mb-6">
-            <h2 className="text-xl font-black uppercase tracking-wide text-white">Comics</h2>
-            <div className="h-px flex-1 bg-white/5" />
-            {!comicsLoading && (
-              <span className="text-white/30 text-sm">{comics.length} résultat{comics.length > 1 ? 's' : ''}</span>
-            )}
-          </div>
+      {/* APPARITIONS */}
+      {comics && comics.length === 0 ? (
+        <p className="max-w-[1320px] mx-auto px-6 py-16 text-xl text-neutral-400">
+          Aucun comic n’est encore référencé pour ce personnage.
+        </p>
+      ) : (
+        <ComicsWall
+          className="pt-6 pb-[72px]"
+          titleId="character-comics"
+          title={<>Ses <span className="text-marvel">apparitions</span></>}
+          items={comics?.map((comic) => {
+            const info = parseComic(comic.title);
+            return { ...comic, title: info.issue ? `${info.title} #${info.issue}` : info.title };
+          })}
+        />
+      )}
 
-          {comicsLoading && (
-            <div className="flex justify-center py-10">
-              <div className="w-8 h-8 border-4 border-white/20 border-t-[#ec1d24] rounded-full animate-spin" />
-            </div>
-          )}
-
-          {!comicsLoading && comics.length === 0 && (
-            <p className="text-white/30 italic">Aucun comic trouvé pour ce personnage.</p>
-          )}
-
-          {comics.length > 0 && (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-              {comics.map((comic) => (
-                <ComicCard key={comic._id} comic={comic} />
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
+      {/* AU CINÉMA : seulement si TMDB a des films pour ce personnage */}
+      {movies.length > 0 && <MovieStrip movies={movies} />}
     </div>
   );
 }

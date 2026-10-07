@@ -13,7 +13,7 @@ interface Props {
 const STALE = 5 * 60 * 1000;
 
 export function CharacterCard({ character }: Props) {
-  const imgUrl = thumbnailUrl(character.thumbnail.path, character.thumbnail.extension);
+  const imgUrl = thumbnailUrl(character.thumbnail.path, character.thumbnail.extension, 'portrait_uncanny');
   const { isFavourite } = useFavourites();
   const queryClient = useQueryClient();
 
@@ -26,18 +26,17 @@ export function CharacterCard({ character }: Props) {
     <Link
       to={`/character/${character._id}`}
       onMouseEnter={prefetch}
-      className="group relative overflow-hidden rounded-lg bg-zinc-900 aspect-[3/4] block"
+      className="panel group relative block aspect-[3/4] overflow-hidden bg-panel border-4 border-ink outline-[3px] outline-solid outline-white shadow-[6px_6px_0_#0b0b0b]"
     >
       <img
         src={imgUrl}
         alt={character.name}
-        className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-110"
+        className="w-full h-full object-cover object-top "
         loading="lazy"
       />
 
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-      <div className="absolute top-0 left-0 right-0 h-1 bg-[#ec1d24] transform -translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+      
       <FavouriteButton
         itemId={character._id}
         itemType="character"
@@ -45,15 +44,16 @@ export function CharacterCard({ character }: Props) {
         thumbnailPath={character.thumbnail.path}
         thumbnailExtension={character.thumbnail.extension}
         isFavourite={isFavourite(character._id)}
-        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+        className="absolute top-2 right-2"
       />
 
       <div className="absolute bottom-0 left-0 right-0 p-4">
-        <h3 className="text-white font-bold text-sm uppercase tracking-wide leading-tight">
+        <div className="h-1 w-9 bg-marvel mb-2" />
+        <h3 className="font-display text-xl leading-none uppercase text-white">
           {character.name}
         </h3>
         {character.description && (
-          <p className="text-white/60 text-xs mt-1 line-clamp-2">{character.description}</p>
+          <p className="text-neutral-300 text-sm mt-1.5 line-clamp-2">{character.description}</p>
         )}
       </div>
     </Link>
