@@ -15,3 +15,23 @@ export const getCharacter = (id: string) =>
 
 export const getComicsByCharacter = (characterId: string) =>
   apiFetch<ApiResponse<import('../types').Comic>>(`/comics/${characterId}`);
+
+export interface Movie {
+  id: number;
+  title: string;
+  year: number;
+  poster: string | null;
+  /** Identifiant de vidéo YouTube de la bande-annonce. */
+  trailer: string | null;
+  url: string;
+}
+
+export interface CharacterExtras {
+  alias: string | null;
+  sound: string | null;
+  movies: Movie[];
+}
+
+/** Identité secrète, onomatopée et films (TMDB) : vides pour les personnages hors sélection. */
+export const getCharacterExtras = (id: string) =>
+  apiFetch<CharacterExtras>(`/character/${id}/extras`);

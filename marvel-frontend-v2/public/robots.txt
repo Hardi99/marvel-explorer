@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
-
-Sitemap: https://marvel-explorer-app.vercel.app/sitemap.xml
+Disallow: /favourites
+Disallow: /user/

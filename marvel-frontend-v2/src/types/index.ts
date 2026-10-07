@@ -19,9 +19,6 @@ export interface Comic {
     path: string;
     extension: string;
   };
-  characters?: {
-    items: { name: string; resourceURI: string }[];
-  };
 }
 
 export interface ApiResponse<T> {

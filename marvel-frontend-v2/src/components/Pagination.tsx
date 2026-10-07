@@ -42,7 +42,7 @@ export function Pagination({ page, totalPages, onPageChange }: Props) {
             onClick={() => onPageChange(p as number)}
             className={`w-9 h-9 rounded font-semibold text-sm transition-all ${
               p === page
-                ? 'bg-[#ec1d24] text-white'
+                ? 'bg-marvel text-white'
                 : 'text-white/50 hover:text-white hover:bg-white/10'
             }`}
           >

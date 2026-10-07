@@ -37,14 +37,14 @@ export default function Login() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-10">
-          <div className="bg-[#ec1d24] text-white font-black text-3xl px-3 py-1 inline-block tracking-tighter mb-4">
+          <div className="bg-marvel text-white font-display text-3xl px-3 pt-1.5 pb-1 inline-block mb-4">
             MARVEL
           </div>
-          <h1 className="text-2xl font-black uppercase text-white">Connexion</h1>
+          <h1 className="text-2xl font-display font-normal uppercase text-white">Connexion</h1>
           <p className="text-white/40 text-sm mt-1">Accédez à l'univers Marvel</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-zinc-900 border border-white/5 rounded-xl p-8 flex flex-col gap-5">
+        <form onSubmit={handleSubmit} className="bg-panel border-4 border-white shadow-[8px_8px_0_#ec1d24] p-8 flex flex-col gap-5">
           {error && (
             <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded">
               {error}
@@ -84,7 +84,7 @@ export default function Login() {
               Mot de passe oublié ?
             </Link>
             <p className="text-white/40">
-              <Link to="/user/signup" className="text-[#ec1d24] hover:underline">
+              <Link to="/user/signup" className="text-marvel hover:underline">
                 S'inscrire
               </Link>
             </p>

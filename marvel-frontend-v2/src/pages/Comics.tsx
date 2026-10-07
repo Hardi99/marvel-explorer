@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useAuthStore } from '../store/auth';
+import { useSearchParams } from 'react-router-dom';
 import { getComics } from '../api/comics';
 import { ComicCard } from '../components/ComicCard';
 import { SearchBar } from '../components/SearchBar';
@@ -11,8 +11,9 @@ import { useDebounce } from '../hooks/useDebounce';
 const ITEMS_PER_PAGE = 20;
 
 export default function Comics() {
-  const { isLoggedIn } = useAuthStore();
-  const [search, setSearch] = useState('');
+  // ?q= : recherche pré-remplie (lien « Toute la série » des fiches comic).
+  const [searchParams] = useSearchParams();
+  const [search, setSearch] = useState(searchParams.get('q') ?? '');
   const [page, setPage] = useState(1);
   const debouncedSearch = useDebounce(search, 400);
 
@@ -29,7 +30,6 @@ export default function Comics() {
         skip: (page - 1) * ITEMS_PER_PAGE,
         limit: ITEMS_PER_PAGE,
       }),
-    enabled: isLoggedIn,
   });
 
   const totalPages = useMemo(() => {
@@ -40,10 +40,10 @@ export default function Comics() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
       <div className="mb-8">
-        <h1 className="text-3xl font-black uppercase tracking-wide text-white mb-1">
+        <h1 className="font-display font-normal text-5xl uppercase text-white mb-1">
           Comics
         </h1>
-        <div className="h-1 w-12 bg-[#ec1d24]" />
+        <div className="h-1 w-12 bg-marvel" />
       </div>
 
       <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-8">
