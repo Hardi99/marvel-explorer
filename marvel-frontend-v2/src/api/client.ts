@@ -1,6 +1,7 @@
 import { useAuthStore } from '../store/auth';
 
-const BASE_URL = import.meta.env.VITE_API_URL as string;
+// Même origine que le site : proxy Vite en local, redirection Vercel → Railway en production.
+const BASE_URL = '/api';
 
 export class ApiError extends Error {
   status: number;
@@ -26,10 +27,12 @@ export async function apiFetch<T>(
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
-    if (res.status === 401) {
+    if (res.status === 401 && useAuthStore.getState().isLoggedIn) {
       useAuthStore.getState().logout();
     }
-    throw new ApiError(res.status, body.error ?? `HTTP ${res.status}`);
+    // Les erreurs de validation renvoient un objet (zod), pas un message lisible.
+    const message = typeof body.error === 'string' ? body.error : res.status === 400 ? 'Données invalides.' : `Erreur ${res.status}`;
+    throw new ApiError(res.status, message);
   }
 
   return res.json() as Promise<T>;
