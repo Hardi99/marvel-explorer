@@ -8,7 +8,10 @@ import type { AppVariables } from '../types/context.js';
 
 const favouriteRoutes = new Hono<{ Variables: AppVariables }>();
 
-favouriteRoutes.use(authMiddleware);
+// Limité aux chemins /favourites : un `use()` sans chemin s'appliquerait à toutes les routes
+// montées après (et transformerait chaque 404 en 401).
+favouriteRoutes.use('/favourites', authMiddleware);
+favouriteRoutes.use('/favourites/*', authMiddleware);
 
 favouriteRoutes.get('/favourites', async (c) => {
   const userId = c.get('userId');
@@ -29,8 +32,8 @@ favouriteRoutes.post('/favourites', zValidator('json', favouriteSchema), async (
   try {
     await db.insert(favouritesTable).values({ userId, ...body });
     return c.json({ message: 'Ajouté aux favoris' }, 201);
-  } catch (err: any) {
-    if (err.code === '23505') {
+  } catch (err) {
+    if ((err as { code?: string }).code === '23505') {
       return c.json({ error: 'Déjà dans les favoris' }, 409);
     }
     throw err;

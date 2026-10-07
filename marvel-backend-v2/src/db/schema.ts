@@ -25,15 +25,23 @@ export const favouritesTable = pgTable('favourites', {
   createdAt: timestamp('created_at').defaultNow(),
 }, (t) => [unique().on(t.userId, t.itemId)]);
 
-export const favouriteSchema = createInsertSchema(favouritesTable).omit({ id: true, userId: true, createdAt: true });
+export const favouriteSchema = createInsertSchema(favouritesTable).omit({ id: true, userId: true, createdAt: true }).extend({
+  itemId: z.string().regex(/^[a-f0-9]{24}$/),
+  // Chemin d'image Marvel uniquement (il est réaffiché tel quel dans le front).
+  thumbnailPath: z.string().max(500).regex(/^https?:\/\/i\.annihil\.us\//),
+  thumbnailExtension: z.enum(['jpg', 'jpeg', 'png', 'gif']),
+});
 
 export const signupSchema = createInsertSchema(usersTable).omit({ id: true, hash: true, createdAt: true, resetToken: true, resetTokenExpiry: true }).extend({
-  password: z.string().min(6),
+  // Caractères limités : le nom est réutilisé dans les e-mails et l'interface.
+  username: z.string().regex(/^[\p{L}\p{N}_.-]{3,30}$/u, 'Nom : 3 à 30 lettres, chiffres, "_", "." ou "-"'),
+  email: z.string().email().max(255),
+  password: z.string().min(8).max(128),
 });
 
 export const loginSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(1),
+  password: z.string().min(1).max(128),
 });
 
 export const forgotPasswordSchema = z.object({
@@ -41,6 +49,6 @@ export const forgotPasswordSchema = z.object({
 });
 
 export const resetPasswordSchema = z.object({
-  token: z.string().min(1),
-  password: z.string().min(6),
+  token: z.string().regex(/^[a-f0-9]{64}$/),
+  password: z.string().min(8).max(128),
 });
