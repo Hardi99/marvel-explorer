@@ -1,6 +1,5 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useAuthStore } from '../store/auth';
 import { getCharacters } from '../api/characters';
 import { CharacterCard } from '../components/CharacterCard';
 import { SearchBar } from '../components/SearchBar';
@@ -11,7 +10,6 @@ import { useDebounce } from '../hooks/useDebounce';
 const ITEMS_PER_PAGE = 20;
 
 export default function Characters() {
-  const { isLoggedIn } = useAuthStore();
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const debouncedSearch = useDebounce(search, 400);
@@ -30,7 +28,6 @@ export default function Characters() {
         skip: (page - 1) * ITEMS_PER_PAGE,
         limit: ITEMS_PER_PAGE,
       }),
-    enabled: isLoggedIn,
   });
 
   const totalPages = useMemo(() => {
@@ -42,10 +39,10 @@ export default function Characters() {
     <div className="max-w-7xl mx-auto px-4 py-10">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-black uppercase tracking-wide text-white mb-1">
+        <h1 className="font-display font-normal text-5xl uppercase text-white mb-1">
           Personnages
         </h1>
-        <div className="h-1 w-12 bg-[#ec1d24]" />
+        <div className="h-1 w-12 bg-marvel" />
       </div>
 
       {/* Search + count */}

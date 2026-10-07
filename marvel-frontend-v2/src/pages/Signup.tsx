@@ -37,8 +37,8 @@ export default function Signup() {
       return;
     }
 
-    const { confirmPassword: _, ...payload } = form;
-    mutation.mutate(payload);
+    const { username, email, password } = form;
+    mutation.mutate({ username, email, password });
   };
 
   const update = (field: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -48,14 +48,14 @@ export default function Signup() {
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-10">
-          <div className="bg-[#ec1d24] text-white font-black text-3xl px-3 py-1 inline-block tracking-tighter mb-4">
+          <div className="bg-marvel text-white font-display text-3xl px-3 pt-1.5 pb-1 inline-block mb-4">
             MARVEL
           </div>
-          <h1 className="text-2xl font-black uppercase text-white">Créer un compte</h1>
+          <h1 className="text-2xl font-display font-normal uppercase text-white">Créer un compte</h1>
           <p className="text-white/40 text-sm mt-1">Rejoignez l'univers Marvel</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-zinc-900 border border-white/5 rounded-xl p-8 flex flex-col gap-5">
+        <form onSubmit={handleSubmit} className="bg-panel border-4 border-white shadow-[8px_8px_0_#ec1d24] p-8 flex flex-col gap-5">
           {error && (
             <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded">
               {error}
@@ -71,6 +71,8 @@ export default function Signup() {
             placeholder="TonyStark"
             value={form.username}
             onChange={update('username')}
+            pattern="[\p{L}\p{N}_.\-]{3,30}"
+            title="3 à 30 lettres, chiffres, « _ », « . » ou « - »"
             required
           />
 
@@ -95,8 +97,10 @@ export default function Signup() {
             placeholder="••••••••"
             value={form.password}
             onChange={update('password')}
+            minLength={8}
             required
           />
+          <p className="-mt-3 text-sm text-neutral-400">8 caractères minimum.</p>
 
           <Input
             label="Confirmer le mot de passe"
@@ -116,7 +120,7 @@ export default function Signup() {
 
           <p className="text-center text-white/40 text-sm">
             Déjà un compte ?{' '}
-            <Link to="/user/login" className="text-[#ec1d24] hover:underline">
+            <Link to="/user/login" className="text-marvel hover:underline">
               Se connecter
             </Link>
           </p>

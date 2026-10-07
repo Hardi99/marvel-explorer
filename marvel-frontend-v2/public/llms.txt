@@ -1,6 +1,6 @@
 # Marvel Explorer
 
-> Application web permettant de parcourir l'univers Marvel : des milliers de personnages et de comics, avec authentification et gestion de favoris. Frontend React + TypeScript, données servies via une API proxy qui protège la clé Marvel.
+> Application web permettant de parcourir l'univers Marvel : des milliers de personnages et de comics, consultables librement, avec un compte pour garder ses favoris. Frontend React + TypeScript, données servies via une API proxy qui protège la clé Marvel.
 
 ## Pages
 
@@ -16,5 +16,5 @@
 
 ## Notes
 
-- L'accès aux données (personnages, comics) nécessite une authentification.
+- Les personnages et comics sont consultables sans compte ; seuls les favoris demandent une connexion.
 - Les images des personnages et comics proviennent de l'API officielle Marvel.
