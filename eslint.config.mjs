@@ -19,6 +19,12 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Anciennes versions et projets annexes présents en local (hors dépôt)
+    "marvel-frontend/**",
+    "marvel-backend/**",
+    "marvel-frontend-v2/**",
+    "marvel-backend-v2/**",
+    "marvel-backend-graphql/**",
   ]),
 ]);
 
