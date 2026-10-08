@@ -7,6 +7,7 @@ import { Logo } from '../layout/Logo';
 const SEEN_KEY = 'marvel-intro-seen';
 const FRAME_MS = 125; // 16 vignettes × 125 ms = 2 s de défilement
 const MAX_WAIT_MS = 1200; // on ne fait jamais attendre plus longtemps les images
+const LOGO_FADE_MS = 1600; // fondu du logo, commencé à mi-défilement
 
 // Intro "flipbook" façon génériques Marvel Studios, jouée une seule fois par navigateur.
 // Jamais jouée si le visiteur a demandé de réduire les animations.
@@ -92,20 +93,23 @@ export function Intro({ frames }: { frames: string[] }) {
   return (
     <div
       className="intro-overlay fixed inset-0 z-50 bg-black overflow-hidden"
-      style={started ? { animation: `intro-out 400ms ease ${flipDuration + 900}ms forwards` } : undefined}
+      style={started ? { animation: `intro-out 500ms ease ${Math.round(flipDuration * 0.5) + LOGO_FADE_MS + 700}ms forwards` } : undefined}
       onAnimationEnd={onAnimationEnd}
     >
       {started && (
         <>
           {played?.map((src, i) => (
-            <img
+            // Vignette entière au centre (pas de recadrage), sur un fond flou de la même image
+            // pour remplir l'écran : l'image n'est plus agrandie au point d'être pixelisée.
+            <div
               key={src}
-              src={src}
-              alt=""
               aria-hidden="true"
-              className="absolute inset-0 w-full h-full object-cover opacity-0 contrast-115 saturate-125"
+              className="absolute inset-0 opacity-0"
               style={{ animation: `intro-flip ${flipDuration}ms step-end ${i * FRAME_MS}ms` }}
-            />
+            >
+              <img src={src} alt="" className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-50" />
+              <img src={src} alt="" className="absolute inset-0 w-full h-full object-contain contrast-115 saturate-125" />
+            </div>
           ))}
           <div
             aria-hidden="true"
@@ -115,7 +119,8 @@ export function Intro({ frames }: { frames: string[] }) {
           <div className="absolute inset-0 flex items-center justify-center">
             <div
               className="flex flex-col items-center gap-3.5 opacity-0"
-              style={{ animation: `intro-slam 600ms ease-out ${flipDuration - 100}ms both` }}
+              // Le logo apparaît en fondu pendant les dernières vignettes, au lieu de surgir à la fin.
+              style={{ animation: `intro-reveal ${LOGO_FADE_MS}ms ease-out ${Math.round(flipDuration * 0.5)}ms both` }}
             >
               <span className="border-[6px] border-white">
                 <span className="block bg-marvel text-white font-display leading-none text-[clamp(72px,13vw,168px)] tracking-[-3px] px-[0.2em] pt-[0.08em] pb-[0.04em]">
