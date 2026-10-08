@@ -8,11 +8,13 @@ import { thumbnailUrl } from '../utils/thumbnail';
 
 interface Props {
   comic: Comic;
+  /** Cartes visibles dès l'ouverture : image chargée tout de suite (meilleur LCP). */
+  priority?: boolean;
 }
 
 const STALE = 5 * 60 * 1000;
 
-export function ComicCard({ comic }: Props) {
+export function ComicCard({ comic, priority = false }: Props) {
   const imgUrl = thumbnailUrl(comic.thumbnail.path, comic.thumbnail.extension, 'portrait_uncanny');
   const { isFavourite } = useFavourites();
   const queryClient = useQueryClient();
@@ -25,9 +27,9 @@ export function ComicCard({ comic }: Props) {
     >
       <img
         src={imgUrl}
-        alt={comic.title}
+        alt=""
         className="w-full h-full object-cover "
-        loading="lazy"
+        loading={priority ? 'eager' : 'lazy'}
       />
 
       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />
@@ -43,9 +45,9 @@ export function ComicCard({ comic }: Props) {
       />
 
       <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-        <h3 className="text-white font-bold text-base leading-tight line-clamp-2">
+        <h2 className="text-white font-bold text-base leading-tight line-clamp-2">
           {comic.title}
-        </h3>
+        </h2>
       </div>
     </Link>
   );
