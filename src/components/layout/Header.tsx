@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -39,25 +39,35 @@ export function Header() {
 
   const closeMenu = () => setMenuOpen(false);
 
+  // Échap referme le menu mobile.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMenuOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [menuOpen]);
+
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     `flex items-center gap-1.5 font-bold text-[17px] tracking-[2px] uppercase transition-colors ${
       isActive ? 'text-white underline decoration-marvel decoration-[3px] underline-offset-8' : 'text-neutral-300 hover:text-white'
     }`;
 
   const mobileNavLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `flex items-center gap-2 py-3 px-6 font-display text-2xl uppercase border-b border-white/10 ${
+    `page-x flex items-center gap-2 py-3 font-display text-2xl uppercase border-b border-white/10 ${
       isActive ? 'text-marvel' : 'text-white'
     }`;
 
   return (
     <header className="sticky top-0 z-40 bg-ink border-b-[3px] border-marvel">
-      <div className="max-w-[1320px] mx-auto px-6 h-[72px] flex items-center gap-8">
+      <div className="page-x h-[72px] flex items-center gap-8">
         <Link href="/" aria-label="Marvel Explorer, accueil" className="flex items-center gap-2.5" onClick={closeMenu}>
           <Logo />
           <span className="hidden sm:inline font-display text-[15px] tracking-[3px] text-white">EXPLORER</span>
         </Link>
 
-        <nav aria-label="Navigation principale" className="hidden md:flex gap-7 flex-1">
+        <nav aria-label="Navigation principale" className="hidden lg:flex gap-7 flex-1">
           <NavLink href="/characters" className={navLinkClass}>Personnages</NavLink>
           <NavLink href="/comics" className={navLinkClass}>Comics</NavLink>
           <NavLink href="/favourites" className={navLinkClass}>
@@ -70,21 +80,23 @@ export function Header() {
           <Link
             href="/characters"
             aria-label="Rechercher un personnage"
-            className="w-11 h-11 flex items-center justify-center border-2 border-neutral-700 text-white hover:border-white transition-colors"
+            onClick={closeMenu}
+            className="shrink-0 w-11 h-11 flex items-center justify-center border-2 border-neutral-700 text-white hover:border-white transition-colors"
           >
             <Search size={20} strokeWidth={2.5} />
           </Link>
 
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-4">
             {isLoggedIn ? (
               <>
-                <span className="flex items-center gap-1.5 text-neutral-300 text-base">
+                {/* Nom affiché seulement quand la place le permet */}
+                <span className="hidden xl:flex items-center gap-1.5 text-neutral-300 text-base whitespace-nowrap">
                   <User size={16} /> {username}
                 </span>
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="h-11 flex items-center gap-2 px-4 border-2 border-white text-white font-bold tracking-[1.5px] uppercase hover:bg-white hover:text-ink transition-colors cursor-pointer"
+                  className="h-11 flex items-center gap-2 px-4 border-2 border-white text-white font-bold tracking-[1.5px] uppercase whitespace-nowrap hover:bg-white hover:text-ink transition-colors cursor-pointer"
                 >
                   <LogOut size={16} /> Déconnexion
                 </button>
@@ -92,7 +104,7 @@ export function Header() {
             ) : (
               <Link
                 href="/user/login"
-                className="h-11 flex items-center px-[18px] border-2 border-white text-white font-bold text-base tracking-[1.5px] uppercase hover:bg-white hover:text-ink transition-colors"
+                className="h-11 flex items-center px-[18px] border-2 border-white text-white font-bold text-base tracking-[1.5px] uppercase whitespace-nowrap hover:bg-white hover:text-ink transition-colors"
               >
                 Se connecter
               </Link>
@@ -101,25 +113,34 @@ export function Header() {
 
           <button
             type="button"
-            className="md:hidden w-11 h-11 flex items-center justify-center text-white cursor-pointer"
+            className="lg:hidden w-11 h-11 flex items-center justify-center text-white cursor-pointer"
             onClick={() => setMenuOpen((o) => !o)}
             aria-label={menuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
             aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
           >
             {menuOpen ? <X size={26} /> : <Menu size={26} />}
           </button>
         </div>
       </div>
 
-      {menuOpen && (
-        <div className="md:hidden bg-ink border-t border-white/10">
+      {/* Menu mobile toujours présent, déplié en douceur (hauteur 0 → contenu) ; « inert » le retire
+          du clavier et des lecteurs d'écran quand il est replié. */}
+      <div
+        id="mobile-menu"
+        inert={!menuOpen}
+        className={`lg:hidden grid transition-[grid-template-rows] duration-300 ease-out motion-reduce:transition-none ${
+          menuOpen ? 'grid-rows-[1fr] border-t border-white/10' : 'grid-rows-[0fr]'
+        }`}
+      >
+        <div className="overflow-hidden bg-ink">
           <nav aria-label="Navigation mobile" className="flex flex-col">
             <NavLink href="/characters" className={mobileNavLinkClass} onClick={closeMenu}>Personnages</NavLink>
             <NavLink href="/comics" className={mobileNavLinkClass} onClick={closeMenu}>Comics</NavLink>
             <NavLink href="/favourites" className={mobileNavLinkClass} onClick={closeMenu}>
               Favoris {!isLoggedIn && <Lock size={18} aria-label="(compte requis)" />}
             </NavLink>
-            <div className="p-6">
+            <div className="page-x py-6">
               {isLoggedIn ? (
                 <div className="flex items-center justify-between">
                   <span className="flex items-center gap-1.5 text-neutral-300"><User size={16} /> {username}</span>
@@ -143,7 +164,7 @@ export function Header() {
             </div>
           </nav>
         </div>
-      )}
+      </div>
     </header>
   );
 }

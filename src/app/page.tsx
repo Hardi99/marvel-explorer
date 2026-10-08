@@ -48,15 +48,18 @@ export default async function Home() {
         <div className="dots absolute inset-0 opacity-55" />
         <div className="absolute inset-0 bg-[linear-gradient(100deg,#0b0b0b_0%,rgb(11_11_11/0.92)_38%,rgb(11_11_11/0)_62%)]" />
 
-        <div className="relative max-w-[1320px] mx-auto px-6 pt-[72px] pb-[140px] flex flex-wrap items-center gap-12">
-          <div className="flex-[1_1_520px] min-w-0 flex flex-col gap-[26px]">
+        <div className="relative page-x pt-[72px] pb-[140px] flex flex-wrap items-center gap-12">
+          {/* @container : le titre se dimensionne sur la largeur de cette colonne, pas sur celle de l'écran */}
+          <div className="@container flex-[1_1_520px] min-w-0 flex flex-col gap-[26px]">
             <p className="self-start bg-caption text-ink border-[3px] border-ink shadow-[6px_6px_0_#0b0b0b] px-4 py-2 font-bold text-lg tracking-[1px] uppercase -rotate-2">
               Pendant ce temps, sur Terre-616…
             </p>
-            <h1 className="font-display font-normal text-[clamp(48px,6vw,104px)] leading-[1.02] uppercase tracking-[-0.5px] -skew-y-3 origin-left">
-              Tout l’univers
-              <br />
-              <span className="text-marvel">Marvel</span> <span className="whitespace-nowrap">dans ta poche</span>
+            {/* Toujours 3 lignes : chacune est un bloc insécable, et la taille suit la colonne (cqw)
+                pour que la plus longue (« Tout l'univers ») tienne quelle que soit la largeur. */}
+            <h1 className="font-display font-normal text-[clamp(36px,13.5cqw,104px)] leading-[1.02] uppercase tracking-[-0.5px] -skew-y-3 origin-left">
+              <span className="block whitespace-nowrap">Tout l’univers</span>
+              <span className="block whitespace-nowrap text-marvel">Marvel</span>
+              <span className="block whitespace-nowrap">dans ta poche</span>
             </h1>
             <p className="mt-2 max-w-[480px] text-[22px] leading-[1.35] text-neutral-200 font-medium">
               Des milliers de héros, de vilains et de comics. Parcours-les librement, garde tes favoris quand tu veux.
@@ -76,10 +79,13 @@ export default async function Home() {
           </div>
 
           {/* Héros du jour */}
-          <div className="flex-[1_1_420px] min-w-0 flex justify-center relative">
+          <div className="flex-[1_1_420px] min-w-0 flex justify-center">
+            {/* L'onomatopée est accrochée à la carte elle-même (même boîte), pas à la colonne :
+                elle garde la même position quelle que soit la largeur de l'écran. */}
+            <div className="relative w-[min(100%,460px)]">
             <Link
               href={`/character/${data.hero._id}`}
-              className="relative block w-[min(100%,460px)] aspect-[3/4] border-[5px] border-ink shadow-[14px_14px_0_#0b0b0b] rotate-2 bg-blue-700 overflow-hidden"
+              className="relative block w-full aspect-[3/4] border-[5px] border-ink shadow-[14px_14px_0_#0b0b0b] rotate-2 bg-blue-700 overflow-hidden"
             >
               <img
                 src={img(data.hero.thumbnail)}
@@ -95,9 +101,10 @@ export default async function Home() {
             </Link>
             <div
               aria-hidden="true"
-              className="starburst absolute -top-[18px] right-[4%] w-[150px] h-[150px] bg-caption text-ink flex items-center justify-center font-comic text-[40px] tracking-[2px] rotate-[10deg]"
+              className="starburst absolute -top-6 -right-3 w-[110px] h-[110px] text-[30px] sm:-top-[34px] sm:-right-[34px] sm:w-[150px] sm:h-[150px] sm:text-[40px] bg-caption text-ink flex items-center justify-center font-comic tracking-[2px] rotate-[10deg]"
             >
               {data.hero.sound}
+            </div>
             </div>
           </div>
         </div>
@@ -114,7 +121,7 @@ export default async function Home() {
 
       {/* PERSONNAGES : grille de cases */}
       <section className="dots-light bg-panel border-y-4 border-white py-[72px]" aria-labelledby="home-characters">
-        <div className="max-w-[1320px] mx-auto px-6 flex flex-col gap-9">
+        <div className="page-x flex flex-col gap-9">
           <div className="flex flex-col gap-3">
             <span className="self-start bg-caption text-ink font-bold text-base tracking-[1.5px] px-2.5 py-1 uppercase">Rassemblement</span>
             <SectionTitle link="/characters" linkLabel="Voir tous les personnages">
@@ -122,7 +129,7 @@ export default async function Home() {
             </SectionTitle>
           </div>
 
-          <ul className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <ul className="grid grid-cols-2 lg:grid-cols-4 3xl:grid-cols-8 gap-6">
             {data.characters.map((character) => (
               <li key={character._id}>
                 <Link

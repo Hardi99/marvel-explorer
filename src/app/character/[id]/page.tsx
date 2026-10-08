@@ -61,7 +61,7 @@ async function CharacterDetails({ params }: { params: PageProps<'/character/[id]
         <div className="dots absolute inset-0 opacity-55" />
         <div className="absolute inset-0 bg-[linear-gradient(260deg,#0b0b0b_0%,rgb(11_11_11/0.9)_40%,rgb(11_11_11/0)_70%)]" />
 
-        <div className="relative max-w-[1320px] mx-auto px-6 pt-7 pb-[120px] flex flex-col gap-7">
+        <div className="relative page-x pt-7 pb-[120px] flex flex-col gap-7">
           <Link href="/characters" className="self-start flex items-center gap-2 font-bold text-[17px] tracking-[2px] uppercase hover:text-caption transition-colors">
             <ArrowLeft size={18} strokeWidth={3} aria-hidden="true" />
             Tous les personnages
@@ -137,7 +137,7 @@ async function CharacterDetails({ params }: { params: PageProps<'/character/[id]
 
       {/* APPARITIONS */}
       {comics.length === 0 ? (
-        <p className="max-w-[1320px] mx-auto px-6 py-16 text-xl text-neutral-400">
+        <p className="page-x py-16 text-xl text-neutral-400">
           Aucun comic n’est encore référencé pour ce personnage.
         </p>
       ) : (
@@ -161,7 +161,7 @@ async function CharacterDetails({ params }: { params: PageProps<'/character/[id]
 function DetailsSkeleton() {
   return (
     <div className="bg-marvel/20 min-h-[720px]" aria-hidden="true">
-      <div className="max-w-[1320px] mx-auto px-6 pt-20 flex flex-wrap gap-14">
+      <div className="page-x pt-20 flex flex-wrap gap-14">
         <div className="w-[min(100%,420px)] aspect-[3/4] bg-panel border-[5px] border-ink -rotate-2" />
         <div className="flex-1 min-w-[280px] flex flex-col gap-6 pt-10">
           <div className="h-10 w-72 bg-caption/40" />

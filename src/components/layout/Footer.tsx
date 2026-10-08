@@ -3,8 +3,8 @@ import { Logo } from './Logo';
 
 export function Footer() {
   return (
-    <footer className="bg-black border-t-4 border-marvel px-6 py-10">
-      <div className="max-w-[1320px] mx-auto flex flex-wrap items-center justify-between gap-5">
+    <footer className="page-x bg-black border-t-4 border-marvel py-10">
+      <div className="flex flex-wrap items-center justify-between gap-5">
         <div className="flex flex-wrap items-center gap-3.5">
           <Logo size="sm" />
           {/* Attribution exigée par les conditions d'utilisation de l'API Marvel. */}
