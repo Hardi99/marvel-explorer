@@ -48,7 +48,7 @@ export default async function Home() {
         <div className="dots absolute inset-0 opacity-55" />
         <div className="absolute inset-0 bg-[linear-gradient(100deg,#0b0b0b_0%,rgb(11_11_11/0.92)_38%,rgb(11_11_11/0)_62%)]" />
 
-        <div className="relative max-w-[1320px] mx-auto px-6 pt-[72px] pb-[140px] flex flex-wrap items-center gap-12">
+        <div className="relative page-x pt-[72px] pb-[140px] flex flex-wrap items-center gap-12">
           <div className="flex-[1_1_520px] min-w-0 flex flex-col gap-[26px]">
             <p className="self-start bg-caption text-ink border-[3px] border-ink shadow-[6px_6px_0_#0b0b0b] px-4 py-2 font-bold text-lg tracking-[1px] uppercase -rotate-2">
               Pendant ce temps, sur Terre-616…
@@ -114,7 +114,7 @@ export default async function Home() {
 
       {/* PERSONNAGES : grille de cases */}
       <section className="dots-light bg-panel border-y-4 border-white py-[72px]" aria-labelledby="home-characters">
-        <div className="max-w-[1320px] mx-auto px-6 flex flex-col gap-9">
+        <div className="page-x flex flex-col gap-9">
           <div className="flex flex-col gap-3">
             <span className="self-start bg-caption text-ink font-bold text-base tracking-[1.5px] px-2.5 py-1 uppercase">Rassemblement</span>
             <SectionTitle link="/characters" linkLabel="Voir tous les personnages">
@@ -122,7 +122,7 @@ export default async function Home() {
             </SectionTitle>
           </div>
 
-          <ul className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <ul className="grid grid-cols-2 lg:grid-cols-4 3xl:grid-cols-8 gap-6">
             {data.characters.map((character) => (
               <li key={character._id}>
                 <Link

@@ -11,7 +11,7 @@ export function MovieStrip({ movies }: { movies: Movie[] }) {
 
   return (
     <section className="film-strip border-y-4 border-white py-16" aria-labelledby="movies-title">
-      <div className="max-w-[1320px] mx-auto px-6 flex flex-col gap-8">
+      <div className="page-x flex flex-col gap-8">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div className="flex flex-col gap-3">
             <span className="self-start bg-marvel-dark text-white font-bold text-base tracking-[1.5px] px-2.5 py-1 uppercase">

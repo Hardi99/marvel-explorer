@@ -85,7 +85,7 @@ async function ComicDetails({ params }: { params: PageProps<'/comic/[id]'>['para
     <>
       {/* EN-TÊTE : la couverture en vedette */}
       <section className="dots-light bg-panel border-b-4 border-white">
-        <div className="max-w-[1320px] mx-auto px-6 pt-7 pb-20 flex flex-col gap-8">
+        <div className="page-x pt-7 pb-20 flex flex-col gap-8">
           <Link href="/comics" className="self-start flex items-center gap-2 font-bold text-[17px] tracking-[2px] uppercase hover:text-caption transition-colors">
             <ArrowLeft size={18} strokeWidth={3} aria-hidden="true" />
             Tous les comics
@@ -169,7 +169,7 @@ async function ComicDetails({ params }: { params: PageProps<'/comic/[id]'>['para
 function DetailsSkeleton() {
   return (
     <div className="bg-panel min-h-[760px]" aria-hidden="true">
-      <div className="max-w-[1320px] mx-auto px-6 pt-20 flex flex-wrap gap-16">
+      <div className="page-x pt-20 flex flex-wrap gap-16">
         <div className="w-[min(100%,400px)] aspect-[2/3] bg-neutral-800 border-[6px] border-white/30 rotate-2" />
         <div className="flex-1 min-w-[280px] flex flex-col gap-6 pt-6">
           <div className="h-8 w-48 bg-white/10" />

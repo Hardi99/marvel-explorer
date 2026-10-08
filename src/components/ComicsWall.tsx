@@ -25,7 +25,7 @@ export function ComicsWall({ title, titleId, link, items, placeholderCount = 8, 
 
   return (
     <section className={className} aria-labelledby={titleId}>
-      <div className="max-w-[1320px] mx-auto px-6 pb-7 flex flex-wrap items-end justify-between gap-4">
+      <div className="page-x pb-7 flex flex-wrap items-end justify-between gap-4">
         <h2 id={titleId} className="font-display font-normal text-[clamp(36px,5vw,64px)] leading-none uppercase">
           {title}
         </h2>
@@ -35,7 +35,7 @@ export function ComicsWall({ title, titleId, link, items, placeholderCount = 8, 
           </Link>
         )}
       </div>
-      <ul className="hscroll flex gap-[22px] px-6 pt-[18px] pb-7 overflow-x-auto">
+      <ul className="hscroll page-x flex gap-[22px] pt-[18px] pb-7 overflow-x-auto">
         {(items ?? Array.from({ length: placeholderCount }, () => null)).map((comic, i) => (
           <li key={comic?._id ?? i} className="flex-none w-[170px] md:w-[190px]">
             {comic ? (

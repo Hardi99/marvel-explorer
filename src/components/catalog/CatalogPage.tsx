@@ -19,7 +19,7 @@ const first = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v
 
 function GridSkeleton({ kind }: { kind: Kind }) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5" aria-hidden="true">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 3xl:grid-cols-10 gap-5" aria-hidden="true">
       {Array.from({ length: 10 }, (_, i) => (
         <div key={i} className={`${kind === 'characters' ? 'aspect-[3/4]' : 'aspect-[2/3]'} border-4 border-white/10 bg-panel`} />
       ))}
@@ -49,7 +49,7 @@ async function Results({ kind, searchParams }: { kind: Kind; searchParams: Searc
       {data.results.length === 0 ? (
         <p className="py-20 text-center text-xl text-neutral-400">Aucun {one} trouvé{query && <> pour « {query} »</>}.</p>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 3xl:grid-cols-10 gap-5">
           {data.kind === 'characters'
             ? data.results.map((item, i) => <CharacterCard key={item._id} character={item} priority={i < 6} />)
             : data.results.map((item, i) => <ComicCard key={item._id} comic={item} priority={i < 6} />)}
@@ -66,7 +66,7 @@ export function CatalogPage({ kind, searchParams }: { kind: Kind; searchParams: 
   const { title, placeholder } = LABELS[kind];
 
   return (
-    <div className="max-w-[1320px] mx-auto px-6 py-12">
+    <div className="page-x py-12">
       <div className="mb-8 flex flex-col gap-3">
         <h1 className="font-display font-normal text-5xl md:text-6xl uppercase">{title}</h1>
         <div className="h-1 w-12 bg-marvel" />
