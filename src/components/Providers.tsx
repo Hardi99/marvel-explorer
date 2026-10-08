@@ -1,23 +1,21 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Toaster } from 'sonner';
+import dynamic from 'next/dynamic';
 import { useAuthStore } from '@/store/auth';
 
-export function Providers({ children }: { children: ReactNode }) {
-  const [queryClient] = useState(
-    () => new QueryClient({ defaultOptions: { queries: { staleTime: 5 * 60 * 1000, retry: 1 } } }),
-  );
+// Zone d'affichage des notifications, chargée après l'affichage de la page (hors du JavaScript initial).
+const Toaster = dynamic(() => import('sonner').then((m) => m.Toaster), { ssr: false });
 
+export function Providers({ children }: { children: ReactNode }) {
   // État de connexion (localStorage) relu une fois la page affichée.
   useEffect(() => {
     void useAuthStore.persist.rehydrate();
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <>
       {children}
       <Toaster
         theme="dark"
@@ -34,6 +32,6 @@ export function Providers({ children }: { children: ReactNode }) {
           },
         }}
       />
-    </QueryClientProvider>
+    </>
   );
 }

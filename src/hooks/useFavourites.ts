@@ -1,20 +1,20 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import { useAuthStore } from '@/store/auth';
-import { getFavourites } from '@/lib/api/favourites';
+import { useFavouritesStore } from '@/store/favourites';
 
 export function useFavourites() {
   const { isLoggedIn } = useAuthStore();
+  const items = useFavouritesStore((s) => s.items);
+  const load = useFavouritesStore((s) => s.load);
 
-  const { data: favourites = [] } = useQuery({
-    queryKey: ['favourites'],
-    queryFn: getFavourites,
-    enabled: isLoggedIn,
-  });
+  useEffect(() => {
+    if (isLoggedIn) void load();
+  }, [isLoggedIn, load]);
 
-  const isFavourite = (itemId: string) =>
-    favourites.some((f) => f.itemId === itemId);
+  const favourites = isLoggedIn ? (items ?? []) : [];
+  const isFavourite = (itemId: string) => favourites.some((f) => f.itemId === itemId);
 
   return { favourites, isFavourite };
 }

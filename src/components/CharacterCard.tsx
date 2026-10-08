@@ -1,9 +1,6 @@
-'use client';
-
 import Link from 'next/link';
 import type { Character } from '@/types';
 import { FavouriteButton } from './FavouriteButton';
-import { useFavourites } from '@/hooks/useFavourites';
 import { thumbnailUrl } from '@/utils/thumbnail';
 
 interface Props {
@@ -12,9 +9,9 @@ interface Props {
   priority?: boolean;
 }
 
+// Composant serveur : seul le bouton favori (client) est interactif.
 export function CharacterCard({ character, priority = false }: Props) {
   const imgUrl = thumbnailUrl(character.thumbnail.path, character.thumbnail.extension, 'portrait_uncanny');
-  const { isFavourite } = useFavourites();
 
   return (
     <Link
@@ -37,7 +34,6 @@ export function CharacterCard({ character, priority = false }: Props) {
         name={character.name}
         thumbnailPath={character.thumbnail.path}
         thumbnailExtension={character.thumbnail.extension}
-        isFavourite={isFavourite(character._id)}
         className="absolute top-2 right-2"
       />
 

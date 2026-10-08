@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useMutation } from '@tanstack/react-query';
-import { toast } from 'sonner';
+import { useAsyncAction } from '@/hooks/useAsyncAction';
+import { notify } from '@/lib/notify';
 import { resetPassword } from '@/lib/api/auth';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -17,10 +17,10 @@ export default function ResetPassword() {
   const [confirm, setConfirm] = useState('');
   const [fieldError, setFieldError] = useState('');
 
-  const mutation = useMutation({
+  const mutation = useAsyncAction({
     mutationFn: () => resetPassword(token, password),
     onSuccess: () => {
-      toast.success('Mot de passe mis à jour', { description: 'Tu peux maintenant te connecter.' });
+      void notify('success', 'Mot de passe mis à jour', 'Tu peux maintenant te connecter.');
       router.push('/user/login');
     },
   });
