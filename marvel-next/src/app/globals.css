@@ -1,0 +1,153 @@
+@import "tailwindcss";
+
+@theme {
+  --color-marvel: #ec1d24;
+  /* Rouge assombri pour du petit texte blanc dessus (contraste ≥ 4.5:1). */
+  --color-marvel-dark: #c8141b;
+  --color-ink: #0b0b0b;
+  --color-panel: #141414;
+  --color-caption: #ffd23f;
+}
+
+/* Polices chargées par next/font (layout.tsx), exposées en variables CSS. */
+@theme inline {
+  --font-sans: var(--font-barlow), system-ui, sans-serif;
+  --font-display: var(--font-anton), 'Impact', sans-serif;
+  --font-comic: var(--font-bangers), 'Impact', sans-serif;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: #ffffff;
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    display: block;
+  }
+
+  #root {
+    min-height: 100vh;
+  }
+
+  /* Les liens (<a>) sont inline par défaut : quand ils enveloppent un
+     bouton, la cible tactile mesurée se réduit à un filet (échec WCAG 2.5.8 target-size).
+     On force l'ancre à épouser la taille du bouton qu'elle contient. */
+  a:has(> button) {
+    display: inline-flex;
+  }
+}
+
+@layer components {
+  /* Trame de points (Ben-Day), signature visuelle de l'impression des comics. */
+  .dots {
+    background-image: radial-gradient(circle, rgb(0 0 0 / 0.55) 1.3px, transparent 1.8px);
+    background-size: 9px 9px;
+  }
+  .dots-light {
+    background-image: radial-gradient(circle, rgb(255 255 255 / 0.14) 1.3px, transparent 1.8px);
+    background-size: 10px 10px;
+  }
+
+  /* Case de BD : se soulève et pivote légèrement au survol. */
+  .panel {
+    transition: transform 0.25s ease;
+  }
+  .panel:hover,
+  .panel:focus-visible {
+    transform: translateY(-6px) rotate(-1deg);
+  }
+
+  /* Bouton à ombre décalée, façon aplat imprimé. */
+  .btn-comic {
+    transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn-comic:hover {
+    background-color: var(--color-caption);
+    color: var(--color-ink);
+  }
+  .btn-comic:active {
+    transform: translate(3px, 3px);
+    box-shadow: 3px 3px 0 var(--color-ink);
+  }
+
+  .starburst {
+    clip-path: polygon(50% 0, 61% 22%, 85% 8%, 78% 34%, 100% 40%, 80% 56%, 96% 78%, 70% 74%, 62% 100%, 48% 80%, 30% 98%, 28% 74%, 4% 82%, 18% 58%, 0 40%, 22% 34%, 14% 8%, 38% 22%);
+  }
+}
+
+/* Intro flipbook : chaque vignette n'est visible qu'1/16e du défilement, puis le logo claque. */
+@keyframes intro-flip {
+  0% { opacity: 1; }
+  6.25% { opacity: 0; }
+  100% { opacity: 0; }
+}
+@keyframes intro-reveal {
+  0% { opacity: 0; transform: scale(1.08); filter: blur(10px); }
+  60% { opacity: 1; filter: blur(0); }
+  100% { opacity: 1; transform: scale(1); filter: blur(0); }
+}
+@keyframes intro-wash {
+  from { opacity: 0.35; }
+  to { opacity: 0.85; }
+}
+@keyframes intro-out {
+  to { opacity: 0; visibility: hidden; }
+}
+
+/* Défilement horizontal (murs de couvertures) : une ligne blanche discrète au lieu de la barre système. */
+@layer components {
+  .hscroll {
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 24px;
+  }
+  .hscroll > * {
+    scroll-snap-align: start;
+  }
+  .hscroll::-webkit-scrollbar {
+    height: 6px;
+  }
+  .hscroll::-webkit-scrollbar-track {
+    background: rgb(255 255 255 / 0.08);
+    margin-inline: 24px;
+  }
+  .hscroll::-webkit-scrollbar-thumb {
+    background: rgb(255 255 255 / 0.7);
+  }
+  .hscroll::-webkit-scrollbar-thumb:hover {
+    background: #ffffff;
+  }
+  /* Firefox ne connaît pas ::-webkit-scrollbar ; `scrollbar-color` désactiverait le style ci-dessus dans Chrome. */
+  @supports not selector(::-webkit-scrollbar) {
+    .hscroll {
+      scrollbar-width: thin;
+      scrollbar-color: rgb(255 255 255 / 0.7) transparent;
+    }
+  }
+}
+
+/* Pellicule de film : rangées de perforations en haut et en bas de la section cinéma. */
+@layer components {
+  .film-strip {
+    background-color: #000000;
+    background-image:
+      linear-gradient(90deg, transparent 14px, #2a2a2a 14px 30px, transparent 30px),
+      linear-gradient(90deg, transparent 14px, #2a2a2a 14px 30px, transparent 30px);
+    background-size: 44px 14px, 44px 14px;
+    background-repeat: repeat-x, repeat-x;
+    background-position: 0 14px, 0 calc(100% - 14px);
+  }
+}
+
+/* L'intro n'existe visuellement que si le script d'en-tête l'a demandée (data-intro sur <html>). */
+.intro-overlay {
+  display: none;
+}
+html[data-intro] .intro-overlay {
+  display: block;
+}

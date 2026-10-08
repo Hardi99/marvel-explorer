@@ -1,0 +1,10 @@
+import type { MetadataRoute } from 'next';
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://marvel-explorer-app.vercel.app';
+
+export default function robots(): MetadataRoute.Robots {
+  return {
+    rules: { userAgent: '*', allow: '/', disallow: ['/api/', '/favourites', '/user/'] },
+    sitemap: `${SITE_URL}/sitemap.xml`,
+  };
+}

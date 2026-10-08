@@ -53,7 +53,7 @@ export default function Characters() {
           onChange={handleSearch}
         />
         {data && (
-          <p className="text-white/40 text-sm whitespace-nowrap">
+          <p className="text-neutral-400 text-sm whitespace-nowrap">
             {data.count} personnage{data.count > 1 ? 's' : ''}
           </p>
         )}
@@ -77,8 +77,8 @@ export default function Characters() {
       {data && data.results.length > 0 && (
         <>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {data.results.map((char) => (
-              <CharacterCard key={char._id} character={char} />
+            {data.results.map((char, i) => (
+              <CharacterCard key={char._id} character={char} priority={i < 6} />
             ))}
           </div>
 
@@ -91,7 +91,7 @@ export default function Characters() {
             }}
           />
 
-          <p className="text-center text-white/20 text-xs mt-4">
+          <p className="text-center text-neutral-400 text-sm mt-4">
             Page {page} / {totalPages}
           </p>
         </>
