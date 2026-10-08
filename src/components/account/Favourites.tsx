@@ -6,7 +6,7 @@ import { useAsyncAction } from '@/hooks/useAsyncAction';
 import { useFavouritesStore } from '@/store/favourites';
 import { useAuthStore, useAuthHydrated } from '@/store/auth';
 import { thumbnailUrl } from '@/utils/thumbnail';
-import type { Favourite } from '@/lib/api/favourites';
+import type { Favourite } from '@/types';
 import { Heart, User, BookOpen } from 'lucide-react';
 
 function FavouriteCard({ fav }: { fav: Favourite }) {

@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAsyncAction } from '@/hooks/useAsyncAction';
 import { notify } from '@/lib/notify';
-import { signup } from '@/lib/api/auth';
+import { signupAction } from '@/server/actions/auth';
+import { unwrap } from '@/lib/action';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 
@@ -21,7 +22,7 @@ export default function Signup() {
   const [error, setError] = useState('');
 
   const mutation = useAsyncAction({
-    mutationFn: signup,
+    mutationFn: (data: { username: string; email: string; password: string }) => unwrap(signupAction(data)),
     onSuccess: () => {
       void notify('success', 'Compte créé !', 'Un email de bienvenue t\'a été envoyé.');
       router.push('/user/login');

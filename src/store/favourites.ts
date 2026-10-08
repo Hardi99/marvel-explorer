@@ -1,7 +1,8 @@
 import { useAuthStore } from './auth';
 import { create } from 'zustand';
-import { addFavourite, getFavourites, removeFavourite } from '@/lib/api/favourites';
-import type { AddFavouritePayload, Favourite } from '@/lib/api/favourites';
+import { addFavouriteAction, listFavouritesAction, removeFavouriteAction } from '@/server/actions/favourites';
+import { unwrap } from '@/lib/action';
+import type { AddFavouritePayload, Favourite } from '@/types';
 
 // Favoris du visiteur connecté, chargés une seule fois puis tenus à jour localement
 // (remplace TanStack Query, trop lourd pour ce seul usage).
@@ -21,7 +22,7 @@ export const useFavouritesStore = create<FavouritesState>()((set, get) => ({
     if (get().loading || get().items) return;
     set({ loading: true });
     try {
-      set({ items: await getFavourites() });
+      set({ items: await unwrap(listFavouritesAction()) });
     } catch {
       set({ items: [] });
     } finally {
@@ -29,12 +30,12 @@ export const useFavouritesStore = create<FavouritesState>()((set, get) => ({
     }
   },
   add: async (payload) => {
-    await addFavourite(payload);
+    await unwrap(addFavouriteAction(payload));
     // Rechargé depuis le serveur : récupère l'identifiant et l'ordre réels.
-    set({ items: await getFavourites() });
+    set({ items: await unwrap(listFavouritesAction()) });
   },
   remove: async (itemId) => {
-    await removeFavourite(itemId);
+    await unwrap(removeFavouriteAction(itemId));
     set({ items: (get().items ?? []).filter((f) => f.itemId !== itemId) });
   },
   reset: () => set({ items: null, loading: false }),

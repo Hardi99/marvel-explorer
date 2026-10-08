@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAsyncAction } from '@/hooks/useAsyncAction';
 import { notify } from '@/lib/notify';
-import { resetPassword } from '@/lib/api/auth';
+import { resetPasswordAction } from '@/server/actions/auth';
+import { unwrap } from '@/lib/action';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 
@@ -18,7 +19,7 @@ export default function ResetPassword() {
   const [fieldError, setFieldError] = useState('');
 
   const mutation = useAsyncAction({
-    mutationFn: () => resetPassword(token, password),
+    mutationFn: () => unwrap(resetPasswordAction({ token, password })),
     onSuccess: () => {
       void notify('success', 'Mot de passe mis à jour', 'Tu peux maintenant te connecter.');
       router.push('/user/login');

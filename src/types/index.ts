@@ -25,3 +25,14 @@ export interface ApiResponse<T> {
 export interface User {
   username: string;
 }
+
+export interface Favourite {
+  id: number;
+  itemId: string;
+  itemType: 'character' | 'comic';
+  name: string;
+  thumbnailPath: string;
+  thumbnailExtension: string;
+}
+
+export type AddFavouritePayload = Omit<Favourite, 'id'>;
