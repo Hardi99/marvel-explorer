@@ -8,7 +8,7 @@ export function Layout() {
   return (
     <div className="min-h-screen flex flex-col bg-ink text-white overflow-x-clip">
       <Header />
-      <main className="flex-1">
+      <main className="flex-1 min-h-[100svh]">
         {/* Fallback affiché pendant le chargement d'une page lazy — le Header reste visible. */}
         <Suspense fallback={<PageSpinner />}>
           <Outlet />
