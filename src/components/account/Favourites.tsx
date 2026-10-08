@@ -2,22 +2,19 @@
 
 import Link from 'next/link';
 import { useFavourites } from '@/hooks/useFavourites';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAsyncAction } from '@/hooks/useAsyncAction';
+import { useFavouritesStore } from '@/store/favourites';
 import { useAuthStore, useAuthHydrated } from '@/store/auth';
-import { removeFavourite } from '@/lib/api/favourites';
 import { thumbnailUrl } from '@/utils/thumbnail';
 import type { Favourite } from '@/lib/api/favourites';
 import { Heart, User, BookOpen } from 'lucide-react';
 
 function FavouriteCard({ fav }: { fav: Favourite }) {
-  const queryClient = useQueryClient();
+  const removeFavourite = useFavouritesStore((s) => s.remove);
   const imgUrl = thumbnailUrl(fav.thumbnailPath, fav.thumbnailExtension);
   const href = fav.itemType === 'character' ? `/character/${fav.itemId}` : `/comic/${fav.itemId}`;
 
-  const remove = useMutation({
-    mutationFn: () => removeFavourite(fav.itemId),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['favourites'] }),
-  });
+  const remove = useAsyncAction({ mutationFn: () => removeFavourite(fav.itemId) });
 
   return (
     <div className="group relative overflow-hidden rounded-lg bg-zinc-900 aspect-[3/4]">

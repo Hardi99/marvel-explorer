@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useMutation } from '@tanstack/react-query';
+import { useAsyncAction } from '@/hooks/useAsyncAction';
 import { forgotPassword } from '@/lib/api/auth';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -11,7 +11,7 @@ export default function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
 
-  const mutation = useMutation({
+  const mutation = useAsyncAction({
     mutationFn: () => forgotPassword(email),
     onSuccess: () => setSent(true),
   });

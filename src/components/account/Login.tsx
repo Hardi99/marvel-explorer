@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useMutation } from '@tanstack/react-query';
+import { useAsyncAction } from '@/hooks/useAsyncAction';
 import { useAuthStore } from '@/store/auth';
 import { login } from '@/lib/api/auth';
 import { Input } from '@/components/ui/Input';
@@ -20,7 +20,7 @@ export default function Login() {
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
 
-  const mutation = useMutation({
+  const mutation = useAsyncAction({
     mutationFn: login,
     onSuccess: (data) => {
       setAuth(data.username);

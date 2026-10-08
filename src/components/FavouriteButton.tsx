@@ -3,10 +3,10 @@
 import { Heart } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
+import { notify } from '@/lib/notify';
+import { useAsyncAction } from '@/hooks/useAsyncAction';
+import { useFavouritesStore } from '@/store/favourites';
 import { useAuthStore } from '@/store/auth';
-import { addFavourite, removeFavourite } from '@/lib/api/favourites';
 import { useFavourites } from '@/hooks/useFavourites';
 import { clsx } from 'clsx';
 
@@ -33,23 +33,17 @@ export function FavouriteButton({
   const isFavourite = isFavouriteProp ?? favourites.isFavourite(itemId);
   const { isLoggedIn } = useAuthStore();
   const pathname = usePathname();
-  const queryClient = useQueryClient();
+  const add = useFavouritesStore((s) => s.add);
+  const remove = useFavouritesStore((s) => s.remove);
 
-  const mutation = useMutation({
+  const mutation = useAsyncAction({
     mutationFn: () =>
-      isFavourite
-        ? removeFavourite(itemId)
-        : addFavourite({ itemId, itemType, name, thumbnailPath, thumbnailExtension }),
+      isFavourite ? remove(itemId) : add({ itemId, itemType, name, thumbnailPath, thumbnailExtension }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['favourites'] });
-      if (isFavourite) {
-        toast(`Retiré des favoris`, { description: name });
-      } else {
-        toast.success(`Ajouté aux favoris`, { description: name });
-      }
+      void notify(isFavourite ? 'info' : 'success', isFavourite ? 'Retiré des favoris' : 'Ajouté aux favoris', name);
     },
-    onError: (err: Error) => {
-      toast.error(err.message);
+    onError: (err) => {
+      void notify('error', err.message);
     },
   });
 

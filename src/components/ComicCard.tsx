@@ -1,9 +1,6 @@
-'use client';
-
 import Link from 'next/link';
 import type { Comic } from '@/types';
 import { FavouriteButton } from './FavouriteButton';
-import { useFavourites } from '@/hooks/useFavourites';
 import { thumbnailUrl } from '@/utils/thumbnail';
 
 interface Props {
@@ -12,9 +9,9 @@ interface Props {
   priority?: boolean;
 }
 
+// Composant serveur : seul le bouton favori (client) est interactif.
 export function ComicCard({ comic, priority = false }: Props) {
   const imgUrl = thumbnailUrl(comic.thumbnail.path, comic.thumbnail.extension, 'portrait_uncanny');
-  const { isFavourite } = useFavourites();
 
   return (
     <Link href={`/comic/${comic._id}`} className="panel group relative block aspect-[2/3] overflow-hidden bg-panel border-4 border-white">
@@ -34,7 +31,6 @@ export function ComicCard({ comic, priority = false }: Props) {
         name={comic.title}
         thumbnailPath={comic.thumbnail.path}
         thumbnailExtension={comic.thumbnail.extension}
-        isFavourite={isFavourite(comic._id)}
         className="absolute top-2 right-2"
       />
 

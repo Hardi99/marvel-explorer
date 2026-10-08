@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useMutation } from '@tanstack/react-query';
-import { toast } from 'sonner';
+import { useAsyncAction } from '@/hooks/useAsyncAction';
+import { notify } from '@/lib/notify';
 import { signup } from '@/lib/api/auth';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -20,10 +20,10 @@ export default function Signup() {
   });
   const [error, setError] = useState('');
 
-  const mutation = useMutation({
+  const mutation = useAsyncAction({
     mutationFn: signup,
     onSuccess: () => {
-      toast.success('Compte créé !', { description: 'Un email de bienvenue t\'a été envoyé.' });
+      void notify('success', 'Compte créé !', 'Un email de bienvenue t\'a été envoyé.');
       router.push('/user/login');
     },
     onError: (err: Error) => {
