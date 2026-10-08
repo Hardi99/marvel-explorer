@@ -8,11 +8,13 @@ import { thumbnailUrl } from '../utils/thumbnail';
 
 interface Props {
   character: Character;
+  /** Cartes visibles dès l'ouverture : image chargée tout de suite (meilleur LCP). */
+  priority?: boolean;
 }
 
 const STALE = 5 * 60 * 1000;
 
-export function CharacterCard({ character }: Props) {
+export function CharacterCard({ character, priority = false }: Props) {
   const imgUrl = thumbnailUrl(character.thumbnail.path, character.thumbnail.extension, 'portrait_uncanny');
   const { isFavourite } = useFavourites();
   const queryClient = useQueryClient();
@@ -30,9 +32,9 @@ export function CharacterCard({ character }: Props) {
     >
       <img
         src={imgUrl}
-        alt={character.name}
+        alt=""
         className="w-full h-full object-cover object-top "
-        loading="lazy"
+        loading={priority ? 'eager' : 'lazy'}
       />
 
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
@@ -49,9 +51,9 @@ export function CharacterCard({ character }: Props) {
 
       <div className="absolute bottom-0 left-0 right-0 p-4">
         <div className="h-1 w-9 bg-marvel mb-2" />
-        <h3 className="font-display text-xl leading-none uppercase text-white">
+        <h2 className="font-display text-xl leading-none uppercase text-white">
           {character.name}
-        </h3>
+        </h2>
         {character.description && (
           <p className="text-neutral-300 text-sm mt-1.5 line-clamp-2">{character.description}</p>
         )}
