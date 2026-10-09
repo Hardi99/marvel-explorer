@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth';
-import { logout as logoutApi } from '@/lib/api/auth';
+import { logoutAction } from '@/server/actions/auth';
 import { Logo } from './Logo';
 import { LogOut, User, Lock, Menu, X, Search } from 'lucide-react';
 
@@ -31,7 +31,7 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = async () => {
-    await logoutApi().catch(() => {});
+    await logoutAction().catch(() => {});
     logout();
     setMenuOpen(false);
     router.push('/');

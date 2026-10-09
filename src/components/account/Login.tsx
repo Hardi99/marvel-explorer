@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAsyncAction } from '@/hooks/useAsyncAction';
 import { useAuthStore } from '@/store/auth';
-import { login } from '@/lib/api/auth';
+import { loginAction } from '@/server/actions/auth';
+import { unwrap } from '@/lib/action';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 
@@ -21,7 +22,7 @@ export default function Login() {
   const [error, setError] = useState('');
 
   const mutation = useAsyncAction({
-    mutationFn: login,
+    mutationFn: (data: typeof form) => unwrap(loginAction(data)),
     onSuccess: (data) => {
       setAuth(data.username);
       router.push(from);

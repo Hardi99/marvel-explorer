@@ -3,12 +3,12 @@
 Catalogue de l'univers Marvel — personnages, comics et films — consultable sans compte, avec des favoris pour les
 membres. En ligne sur **https://marvel-explorer-app.vercel.app**.
 
-Une seule application **Next.js 16** : pages et API réunies, déployée sur Vercel, base PostgreSQL Neon.
+Une seule application **Next.js 16** : pages rendues côté serveur et Server Actions, déployée sur Vercel, base PostgreSQL Neon.
 
 - **Pages** rendues côté serveur à partir de données en cache (`use cache`) : accueil, listes
   (`/characters`, `/comics`, recherche et pagination par l'URL), fiches (`/character/[id]`, `/comic/[id]`).
-- **API** Hono sous `/api` (`src/app/api/[[...route]]/route.ts`, code dans `src/server/`) : comptes,
-  favoris, catalogue pour les parties interactives.
+- **Server Actions** (`src/server/actions/`) : comptes (inscription, connexion, mot de passe oublié) et favoris,
+  avec session par cookie signé (`src/server/session.ts`) et limite anti-abus.
 - **Données** : API Marvel (Le Reacteur), films TMDB (sélection dans `src/server/curation.ts`), base Neon
   (Drizzle, `src/server/db/schema.ts`).
 

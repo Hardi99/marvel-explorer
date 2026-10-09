@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useAsyncAction } from '@/hooks/useAsyncAction';
-import { forgotPassword } from '@/lib/api/auth';
+import { forgotPasswordAction } from '@/server/actions/auth';
+import { unwrap } from '@/lib/action';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 
@@ -12,7 +13,7 @@ export default function ForgotPassword() {
   const [sent, setSent] = useState(false);
 
   const mutation = useAsyncAction({
-    mutationFn: () => forgotPassword(email),
+    mutationFn: () => unwrap(forgotPasswordAction({ email })),
     onSuccess: () => setSent(true),
   });
 
