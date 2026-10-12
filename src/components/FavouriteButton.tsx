@@ -26,6 +26,9 @@ interface Props {
 const labelClass =
   'btn-comic inline-flex items-center gap-2.5 bg-white text-ink font-display text-[22px] tracking-[1px] uppercase px-6 py-3.5 border-[3px] border-ink shadow-[6px_6px_0_#0b0b0b] cursor-pointer disabled:opacity-60';
 
+/** Pastille carrée des cartes (accueil, listes, favoris), connecté ou non. */
+export const squareClass = 'w-10 h-10 flex items-center justify-center border-2 border-white text-white';
+
 export function FavouriteButton({
   itemId, itemType, name, thumbnailPath, thumbnailExtension, isFavourite: isFavouriteProp, className, variant = 'icon',
 }: Props) {
@@ -71,27 +74,34 @@ export function FavouriteButton({
     );
   }
 
-  if (!isLoggedIn) return null;
+  // Sans compte : même pastille carrée, purement décorative (la carte entière reste le lien).
+  if (!isLoggedIn) {
+    return (
+      <span aria-hidden="true" className={clsx(squareClass, 'bg-black/60', className)}>
+        <Heart size={18} strokeWidth={2.5} />
+      </span>
+    );
+  }
 
   return (
     <button
+      type="button"
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
         mutation.mutate();
       }}
       disabled={mutation.isPending}
+      aria-pressed={isFavourite}
       aria-label={isFavourite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
       className={clsx(
-        'p-2 rounded-full transition-all duration-200',
-        isFavourite
-          ? 'bg-marvel text-white hover:bg-[#c5151b]'
-          : 'bg-black/50 text-white/60 hover:text-white hover:bg-black/70',
-        'disabled:opacity-50',
+        squareClass,
+        'cursor-pointer transition-colors disabled:opacity-50',
+        isFavourite ? 'bg-marvel-dark hover:bg-marvel' : 'bg-black/60 hover:bg-black/80',
         className
       )}
     >
-      <Heart size={16} fill={isFavourite ? 'currentColor' : 'none'} />
+      <Heart size={18} strokeWidth={2.5} fill={isFavourite ? 'currentColor' : 'none'} />
     </button>
   );
 }
