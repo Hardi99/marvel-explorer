@@ -1,9 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Heart } from 'lucide-react';
 import { useAuthStore } from '@/store/auth';
-import { useFavourites } from '@/hooks/useFavourites';
 import { FavouriteButton } from '../FavouriteButton';
 import type { Thumbnail } from '@/types';
 
@@ -11,16 +9,6 @@ import type { Thumbnail } from '@/types';
 // le reste de la page est rendu côté serveur et servi tel quel par le CDN.
 
 export function CardFavourite({ id, name, thumbnail }: { id: string; name: string; thumbnail: Thumbnail }) {
-  const { isLoggedIn } = useAuthStore();
-  const { isFavourite } = useFavourites();
-
-  if (!isLoggedIn) {
-    return (
-      <span aria-hidden="true" className="absolute top-3 right-3 w-10 h-10 flex items-center justify-center bg-black/60 border-2 border-white">
-        <Heart size={18} strokeWidth={2.5} />
-      </span>
-    );
-  }
   return (
     <FavouriteButton
       itemId={id}
@@ -28,7 +16,6 @@ export function CardFavourite({ id, name, thumbnail }: { id: string; name: strin
       name={name}
       thumbnailPath={thumbnail.path}
       thumbnailExtension={thumbnail.extension}
-      isFavourite={isFavourite(id)}
       className="absolute top-3 right-3"
     />
   );
